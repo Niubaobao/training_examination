@@ -3,4 +3,6 @@
     <router-view />
   </div>
 </template>
-<style lang="less"></style>
+<style lang="less">
+@import "~/assets/css/iconfont.css";
+</style>
