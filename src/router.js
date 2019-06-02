@@ -28,6 +28,12 @@ export default new Router({
       path: "/personal-center",
       name: "personal-center",
       component: () => import("./views/PersonalCenter.vue")
+    },
+    {
+      // 最近学习
+      path: "/learn-history",
+      name: "learn——history",
+      component: () => import("./views/LearnHistory.vue")
     }
   ]
 });

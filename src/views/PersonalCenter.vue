@@ -33,7 +33,7 @@
               title="最近学习"
               icon="underway-o"
               is-link
-              to="/learning-tasks"
+              to="/learn-history"
             />
           </div>
           <van-cell

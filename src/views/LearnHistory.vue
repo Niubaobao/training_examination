@@ -1,0 +1,186 @@
+<template>
+  <div class="contentWapper">
+    <div class="header-wapper">
+      <div class="item" :class="{ active: tab === 0 }" @click="tab = 0">
+        学习中
+      </div>
+      <div class="item" :class="{ active: tab === 1 }" @click="tab = 1">
+        已完成
+      </div>
+      <div class="bot-line" :class="address">
+        <span class="bar-inner"></span>
+      </div>
+    </div>
+    <!-- 学习中 -->
+    <div v-if="tab === 0">
+      <div class="courseList">
+        <div class="qwui-learn_list_item clearfix">
+          <div class="item_img_wrap">
+            <img
+              src="https://qwyimg.do1.com.cn/fileweb/compress/upload/img/4ab7e1bffe8f4201b99f5d4d160a668f/20190529/046ff26b6e60451d8148be3cf51cf78e.jpeg"
+              alt=""
+            />
+          </div>
+          <!-- 进度 -->
+          <div class="item_rate">
+            <div class="rate">
+              <van-circle
+                font-size="12px;"
+                v-model="currentRate"
+                :rate="30"
+                :speed="100"
+                size="45px"
+                layer-color="#ebedf0"
+                :text="text"
+              />
+            </div>
+            <div class="desc">已学习</div>
+          </div>
+          <p class="item_subjectName">
+            大数据分析大数据分析大数据分析
+          </p>
+        </div>
+      </div>
+    </div>
+    <!-- 已完成 -->
+    <div v-if="tab === 1">已完成</div>
+  </div>
+</template>
+<script>
+// @ is an alias to /src
+import { Circle } from "vant";
+export default {
+  name: "learn-history",
+  data() {
+    return {
+      tab: 0,
+      currentRate: 0
+    };
+  },
+  computed: {
+    address: function() {
+      return this.tab === 0 ? "lf" : "rg";
+    },
+    text() {
+      return this.currentRate.toFixed(0) + "%";
+    }
+  },
+  components: {
+    "van-circle": Circle
+  }
+};
+</script>
+<style lang="less" scoped>
+/deep/ .van-circle__text {
+  font-size: 12px;
+  color: #45a8f5;
+  line-height: 12px;
+}
+.contentWapper {
+  .header-wapper {
+    display: flex;
+    flex-direction: row;
+    background: white;
+    height: 44px;
+    position: relative;
+    border-bottom: 1px solid #eeeeee;
+    width: 100%;
+    .item {
+      line-height: 44px;
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+      flex: 1;
+    }
+    .active {
+      color: #2f7dcd;
+    }
+    .bot-line {
+      position: absolute;
+      bottom: 0;
+      display: block;
+      height: 3px;
+      background-color: transparent;
+      .bar-inner {
+        width: 70%;
+        display: block;
+        background-color: #2f7dcd;
+        margin: auto;
+        height: 100%;
+      }
+    }
+    .lf {
+      left: 0%;
+      right: 50%;
+    }
+    .rg {
+      left: 50%;
+      right: 0%;
+    }
+  }
+  .courseList {
+    padding-top: 10px;
+    background: #fff;
+    box-sizing: border-box;
+    .qwui-learn_list_item {
+      position: relative;
+      // height: 64px;
+      padding: 12px 15px;
+      box-sizing: border-box;
+    }
+    .item_img_wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 55%;
+      background-size: cover;
+      overflow: hidden;
+      float: left;
+      width: 115px;
+      height: 64px;
+      padding-top: 0;
+      margin-right: 10px;
+      background-size: 100%;
+      border-radius: 5px;
+      overflow: hidden;
+      img {
+        position: relative;
+        height: 64px;
+        width: auto;
+        max-width: none;
+        left: -6.5px;
+      }
+    }
+    .item_subjectName {
+      padding-top: 1px;
+      height: 38px;
+      font-weight: 500;
+      font-size: 15px;
+      line-height: 19px;
+      color: #333;
+      word-wrap: break-word;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .item_rate {
+      float: right;
+      margin-left: 14px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      .rate {
+        width: 45px;
+        height: 45px;
+      }
+      .desc {
+        font-size: 12px;
+        color: #45a8f5;
+        line-height: 12px;
+        margin-top: 4px;
+      }
+    }
+  }
+}
+</style>
