@@ -40,7 +40,7 @@
             title="考试记录"
             icon="records"
             is-link
-            url="http://www.baidu.com"
+            url="/examination-history"
           />
         </div>
       </div>
