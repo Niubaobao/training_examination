@@ -40,15 +40,53 @@
             大数据分析大数据分析大数据分析
           </p>
         </div>
+        <div class="qwui-learn_list_item clearfix">
+          <div class="item_img_wrap">
+            <img
+              src="https://qwyimg.do1.com.cn/fileweb/compress/upload/img/4ab7e1bffe8f4201b99f5d4d160a668f/20190529/046ff26b6e60451d8148be3cf51cf78e.jpeg"
+              alt=""
+            />
+          </div>
+          <!-- 进度 -->
+          <div class="item_rate">
+            <div class="rate">
+              <van-circle
+                font-size="12px;"
+                v-model="currentRate"
+                :rate="30"
+                :speed="100"
+                size="45px"
+                layer-color="#ebedf0"
+                :text="text"
+              />
+            </div>
+            <div class="desc">已学习</div>
+          </div>
+          <p class="item_subjectName">
+            大数据分析大数据分析大数据分析
+          </p>
+        </div>
+      </div>
+      <div class="qwui-showMoreList">
+        <p>共 2 条</p>
       </div>
     </div>
     <!-- 已完成 -->
-    <div v-if="tab === 1">已完成</div>
+    <div v-if="tab === 1">
+      <!-- 空记录 -->
+      <div class="qwui-no_record_box">
+        <div>
+          <van-icon name="description" size="130px" color="#eeeeee" />
+        </div>
+        <p class="qwui-no_record_title">暂无学习记录</p>
+        <p class="qwui-no_record_text">快去首页选课学习吧</p>
+      </div>
+    </div>
   </div>
 </template>
 <script>
 // @ is an alias to /src
-import { Circle } from "vant";
+import { Circle, Icon } from "vant";
 export default {
   name: "learn-history",
   data() {
@@ -66,7 +104,8 @@ export default {
     }
   },
   components: {
-    "van-circle": Circle
+    "van-circle": Circle,
+    "van-icon": Icon
   }
 };
 </script>
@@ -181,6 +220,36 @@ export default {
         margin-top: 4px;
       }
     }
+  }
+  .qwui-showMoreList {
+    position: relative;
+    font-size: 14px;
+    color: #999;
+    line-height: 44px;
+    text-align: center;
+    p {
+      margin: 0;
+    }
+  }
+  //已完成
+  .qwui-no_record_box {
+    position: fixed;
+    margin-top: -92px;
+    top: 50%;
+    left: 0;
+    right: 0;
+    text-align: center;
+  }
+  .qwui-no_record_title {
+    font-size: 18px;
+    color: #666;
+    margin: 0;
+  }
+  .qwui-no_record_text {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #bbb;
+    line-height: 1;
   }
 }
 </style>

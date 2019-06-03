@@ -34,6 +34,12 @@ export default new Router({
       path: "/learn-history",
       name: "learn——history",
       component: () => import("./views/LearnHistory.vue")
+    },
+    {
+      // 考试记录
+      path: "/examination-history",
+      name: "examination-history",
+      component: () => import("./views/examinationHistory.vue")
     }
   ]
 });
