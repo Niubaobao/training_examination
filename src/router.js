@@ -40,6 +40,12 @@ export default new Router({
       path: "/examination-history",
       name: "examination-history",
       component: () => import("./views/examinationHistory.vue")
+    },
+    {
+      // 学习任务首页
+      path: "/learn-home",
+      name: "learn-home",
+      component: () => import("./views/LearnHome.vue")
     }
   ]
 });
