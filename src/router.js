@@ -46,6 +46,12 @@ export default new Router({
       path: "/compulsory-course",
       name: "compulsory-course",
       component: () => import("./views/CompulsoryCourse.vue")
+    },
+    {
+      // 课程介绍
+      path: "/course-introduce",
+      name: "course-introduce",
+      component: () => import("./views/CourseIntroduce.vue")
     }
   ]
 });
