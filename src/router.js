@@ -42,10 +42,10 @@ export default new Router({
       component: () => import("./views/examinationHistory.vue")
     },
     {
-      // 学习任务首页
-      path: "/learn-home",
-      name: "learn-home",
-      component: () => import("./views/LearnHome.vue")
+      // 必修课 选修课
+      path: "/compulsory-course",
+      name: "compulsory-course",
+      component: () => import("./views/CompulsoryCourse.vue")
     }
   ]
 });
