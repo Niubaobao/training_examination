@@ -14,7 +14,8 @@ const getters = {};
 const actions = {
   async getList({ commit }) {
     commit("setLoading", true);
-    const data = await getList();
+    const { data } = await getList();
+    console.info(data, "data");
     commit("setList", data);
     commit("setLoading", false);
   }
