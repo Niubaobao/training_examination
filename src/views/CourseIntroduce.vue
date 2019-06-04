@@ -1,0 +1,270 @@
+<template>
+  <div class="scroll_wrap">
+    <div class="preview_wrap">
+      <!-- 视频 -->
+      <div
+        class="cover_wrap"
+        style="background-image:url('https://qwyimg.do1.com.cn/fileweb/compress/upload/img/4ab7e1bffe8f4201b99f5d4d160a668f/20190529/046ff26b6e60451d8148be3cf51cf78e.jpeg')"
+      ></div>
+      <!-- 朦层 -->
+      <div class="tip_warp">
+        <div class="tip_box">
+          <div>
+            <p class="tip_last_learn">最近学习到：图文课件测试</p>
+            <div class="tip_btn">继续学习</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="header">
+      <div class="lf" @click="tab = 0">介绍</div>
+      <div class="rg" @click="tab = 1">目录</div>
+      <div class="line" :class="tab === 0 ? 'lfactive' : 'rgactive'">
+        <span class="active"></span>
+      </div>
+    </div>
+    <!-- 介绍 -->
+    <div v-if="tab === 0" class="introduce">
+      <div class="introduce_wrap">
+        <div class="course_info">
+          <p class="course_title">大数据分析基础</p>
+          <p class="learn_num">0 人学完</p>
+        </div>
+        <div class="course_info">
+          <p class="course_title">课程简介</p>
+          <p class="learn_num">test</p>
+        </div>
+        <div class="course_info">
+          <p class="course_title">适用人群</p>
+          <p class="learn_num">额</p>
+        </div>
+        <div class="course_info">
+          <p class="course_title">
+            可程学分 <span class="course_credit_num">100</span>
+          </p>
+        </div>
+      </div>
+    </div>
+    <!-- 目录 -->
+    <div v-if="tab === 1" class="catalogue">
+      <van-collapse v-model="activeNames">
+        <van-collapse-item title="标题" name="1">
+          <ul class="chapter_list">
+            <li class="courseware">
+              <div class="course_info">
+                <p class="course_name">10.01.jpg</p>
+                <p class="learn_time">0分钟/5分钟</p>
+              </div>
+              <div class="course_state">
+                <van-circle
+                  v-model="currentRate"
+                  size="20px"
+                  layer-color="#ebedf0"
+                  :rate="30"
+                  :speed="100"
+                />
+              </div>
+            </li>
+            <li class="courseware">
+              <div class="course_info">
+                <p class="course_name">10.01.jpg</p>
+                <p class="learn_time">0分钟/5分钟</p>
+              </div>
+              <div class="course_state">
+                <van-circle
+                  v-model="currentRate"
+                  size="20px"
+                  layer-color="#ebedf0"
+                  :rate="30"
+                  :speed="100"
+                />
+              </div>
+            </li>
+          </ul>
+        </van-collapse-item>
+      </van-collapse>
+    </div>
+  </div>
+</template>
+
+<script>
+import { Collapse, CollapseItem, Circle } from "vant";
+
+export default {
+  name: "course-introduce",
+  data() {
+    return {
+      tab: 0,
+      currentRate: 0,
+      activeNames: ["1"]
+    };
+  },
+  components: {
+    "van-collapse": Collapse,
+    "van-collapse-item": CollapseItem,
+    "van-circle": Circle
+  }
+};
+</script>
+<style lang="less" scoped>
+/deep/ .van-collapse-item__title {
+  background: #f7f7f7;
+}
+/deep/ .van-collapse-item__content {
+  padding: 0;
+}
+.scroll_wrap {
+  p {
+    margin: 0;
+  }
+  .preview_wrap {
+    width: 100%;
+    height: 206px;
+    position: relative;
+    .cover_wrap {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+    .tip_warp {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      bottom: 0;
+      z-index: 10;
+      background-color: rgba(0, 0, 0, 0.6);
+      .tip_box {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 290px;
+        height: 80px;
+        margin: auto;
+        font-size: 16px;
+        color: #fff;
+        text-align: center;
+        .tip_last_learn {
+          font-size: 14px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .tip_btn {
+          width: 105px;
+          height: 36px;
+          margin: 20px auto 0;
+          font-size: 15px;
+          line-height: 36px;
+          border: 1px solid #fff;
+          border-radius: 18px;
+          background-color: rgba(31, 34, 36, 0.5);
+        }
+      }
+    }
+  }
+  .header {
+    width: 100%;
+    height: 44px;
+    position: relative;
+    display: flex;
+    line-height: 44px;
+    text-align: center;
+    background: white;
+    border-bottom: 1px solid #eeeeee;
+    .lf {
+      flex: 1;
+    }
+    .rg {
+      flex: 1;
+    }
+    .line {
+      position: absolute;
+      bottom: 0;
+      width: 50%;
+      height: 3px;
+      .active {
+        width: 70%;
+        height: 100%;
+        display: block;
+        background-color: #2f7dcd;
+        margin: auto;
+      }
+    }
+    .lfactive {
+      left: 0;
+      right: 50%;
+    }
+    .rgactive {
+      left: 50%;
+      right: 0;
+    }
+  }
+  .introduce_wrap {
+    .course_info {
+      margin-bottom: 10px;
+      padding: 15px;
+      background-color: #fff;
+      box-sizing: border-box;
+      .course_title {
+        margin-bottom: 6px;
+        font-family: "PingFang-SC-Medium";
+        font-size: 19px;
+        color: #333;
+        .course_credit_num {
+          margin-left: 6px;
+        }
+      }
+      .learn_num {
+        margin-bottom: 10px;
+        font-size: 13px;
+        color: #999;
+      }
+    }
+  }
+  .catalogue {
+    .chapter_list {
+      padding-left: 15px;
+      background-color: #fff;
+      box-sizing: border-box;
+      .courseware {
+        height: 65px;
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        border-bottom: 1px solid #eeeeee;
+        .course_info {
+          flex: 1;
+          .course_name {
+            box-sizing: border-box;
+            padding-top: 12px;
+            font-size: 16px;
+            color: #333;
+            white-space: nowrap;
+            word-wrap: normal;
+            text-overflow: ellipsis;
+            overflow: hidden;
+          }
+          .learn_time {
+            font-size: 13px;
+            color: #999;
+          }
+        }
+        .course_state {
+          position: relative;
+          width: 70px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+      .courseware:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}
+</style>
