@@ -51,12 +51,25 @@
 // @ is an alias to /src
 import PageWithTab from "@/components/PageWithTab.vue";
 import { Cell } from "vant";
+import { getUserInfo } from "@/api/index.js";
 
 export default {
   name: "personal-center",
   components: {
     PageWithTab,
     "van-cell": Cell
+  },
+  mounted() {
+    this.getUserInfo();
+  },
+  methods: {
+    async getUserInfo() {
+      const params = {
+        openid: "HeiSeYouMo"
+      };
+      const res = await getUserInfo(params);
+      console.log(res);
+    }
   }
 };
 </script>

@@ -1,9 +1,10 @@
 import Vue from "vue";
 import Router from "vue-router";
+// import { userLogin } from "@/api/index.js";
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: "history",
   base: process.env.BASE_URL,
   routes: [
@@ -61,3 +62,49 @@ export default new Router({
     }
   ]
 });
+// router.beforeEach(async (to, from, next) => {
+//   const KEY = "training_examination_user";
+//   const localStorage = window.localStorage;
+//   const url = to.fullPath;
+//   const str = localStorage.getItem(KEY);
+//   const code = to.query.code;
+//   if (code) {
+//     if (to.path === "/epolice-reg") {
+//       return next();
+//     }
+//     if (!str) {
+//       // 调用后端接口
+//       const params = {
+//         wxcode: code
+//       };
+//       const { status, data } = await userLogin(params);
+//       console.log(data);
+//       if (status == 200) {
+//         if (data && data.data) {
+//           localStorage.setItem(KEY, JSON.stringify(data.data));
+//           return next();
+//         } else {
+//           return router.push("/epolice-reg");
+//         }
+//       } else {
+//         // 跳转注册页
+//         return router.push("/epolice-reg");
+//       }
+//     } else {
+//       const { userid } = JSON.parse(str);
+//       if (!userid) {
+//         return router.push("/epolice-reg");
+//       } else {
+//         return next();
+//       }
+//     }
+//   } else {
+//     gotoWx(url);
+//   }
+// });
+// // 需要换成新应用的应用信息
+// export const gotoWx = url => {
+//   window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=ww24a164bc2a6b8202&redirect_uri=http://dzjc.ruantechnology.com${url}&response_type=code&scope=snsapi_base&agentid=1000004&state=123&connect_redirect=1#wechat_redirect`;
+// };
+
+export default router;
