@@ -1,5 +1,5 @@
 <template>
-  <div class="exama-ssess">
+  <div class="exam-assess">
     <PageWithTab>
       <van-list
         :value.sync="loading"
@@ -34,7 +34,7 @@ import { List, Button } from "vant";
 const { mapActions, mapState } = createNamespacedHelpers("examAssess");
 
 export default {
-  name: "exama-ssess",
+  name: "exam-assess",
   components: {
     PageWithTab,
     "van-list": List,
