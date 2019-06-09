@@ -100,6 +100,7 @@
 // @ is an alias to /src
 import PageWithTab from "@/components/PageWithTab.vue";
 import { Search, Icon, Circle } from "vant";
+import { getCourses } from "@/api/index.js";
 
 export default {
   name: "learning-tasks",
@@ -116,7 +117,18 @@ export default {
       currentRate: 0
     };
   },
+  mounted() {
+    this.getList();
+  },
   methods: {
+    async getList() {
+      const params = {
+        userid: 110,
+        keyword: "大数据"
+      };
+      const res = await getCourses(params);
+      console.log(res);
+    },
     goDetail(value) {
       this.$router.push({
         path: "/compulsory-course",

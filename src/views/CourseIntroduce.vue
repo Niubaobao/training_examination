@@ -89,6 +89,7 @@
 
 <script>
 import { Collapse, CollapseItem, Circle } from "vant";
+import { getCourseInfo } from "@/api/index.js";
 
 export default {
   name: "course-introduce",
@@ -103,6 +104,18 @@ export default {
     "van-collapse": Collapse,
     "van-collapse-item": CollapseItem,
     "van-circle": Circle
+  },
+  mounted() {
+    this.getCourseInfo();
+  },
+  methods: {
+    async getCourseInfo() {
+      const params = {
+        courseid: "50beecdb-8933-11e9-8985-00163e027035"
+      };
+      const res = await getCourseInfo(params);
+      console.log(res);
+    }
   }
 };
 </script>
