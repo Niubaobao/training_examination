@@ -24,6 +24,12 @@ export default new Router({
       component: () => import("./views/ExamAssess.vue")
     },
     {
+      // 考试测评-详情
+      path: "/exam-assess-detail",
+      name: "exam-assess-detail",
+      component: () => import("./views/ExamAssessDetail.vue")
+    },
+    {
       // 个人中心
       path: "/personal-center",
       name: "personal-center",
