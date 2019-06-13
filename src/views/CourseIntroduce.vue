@@ -4,7 +4,7 @@
       <!-- 视频 -->
       <div
         class="cover_wrap"
-        style="background-image:url('https://qwyimg.do1.com.cn/fileweb/compress/upload/img/4ab7e1bffe8f4201b99f5d4d160a668f/20190529/046ff26b6e60451d8148be3cf51cf78e.jpeg')"
+        style="background-image:url(`http://dzjc.ruantechnology.com${data.kcfm}`)"
       ></div>
       <!-- 朦层 -->
       <div class="tip_warp">
@@ -97,7 +97,10 @@ export default {
     return {
       tab: 0,
       currentRate: 0,
-      activeNames: ["1"]
+      activeNames: ["1"],
+      id: "",
+      data: {},
+      catalogue: [] //目录
     };
   },
   components: {
@@ -106,15 +109,18 @@ export default {
     "van-circle": Circle
   },
   mounted() {
+    this.id = this.$route.query.id;
     this.getCourseInfo();
   },
   methods: {
     async getCourseInfo() {
       const params = {
-        courseid: "50beecdb-8933-11e9-8985-00163e027035"
+        courseid: this.id
       };
-      const res = await getCourseInfo(params);
-      console.log(res);
+      const { status, data } = await getCourseInfo(params);
+      if (status !== 200) return;
+      this.data = data.data;
+      this.catalogue = data.data.kcnr;
     }
   }
 };

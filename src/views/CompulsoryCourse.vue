@@ -1,71 +1,16 @@
 <template>
   <div class="content-wapper">
     <ul class="list_content">
-      <li class="qwui-learn_item">
+      <li class="qwui-learn_item" v-for="item in sourceArr" :key="item.kcid">
         <div class="list_cover">
           <div class="cover_wrap">
-            <img
-              src="https://qwyimg.do1.com.cn/fileweb/compress/upload/img/4ab7e1bffe8f4201b99f5d4d160a668f/20190529/046ff26b6e60451d8148be3cf51cf78e.jpeg"
-              alt=""
-            />
+            <img :src="`http://dzjc.ruantechnology.com${item.kcfm}`" alt="" />
           </div>
           <div class="cover_info">
             <p class="info_wrap stopTime_wrap">2019-06-05 截止 剩2天</p>
           </div>
         </div>
-        <h2 class="list_title ellipsis">测试排版</h2>
-        <div class="item_state">
-          <span>
-            <van-circle
-              v-model="currentRate"
-              :rate="30"
-              :speed="100"
-              size="14px"
-              layer-color="#ebedf0"
-            />
-          </span>
-          <span class="status learn_unend">已学0%</span>
-        </div>
-      </li>
-      <li class="qwui-learn_item">
-        <div class="list_cover">
-          <div class="cover_wrap">
-            <img
-              src="https://qwyimg.do1.com.cn/fileweb/compress/upload/img/4ab7e1bffe8f4201b99f5d4d160a668f/20190529/046ff26b6e60451d8148be3cf51cf78e.jpeg"
-              alt=""
-            />
-          </div>
-          <div class="cover_info">
-            <p class="info_wrap stopTime_wrap">2019-06-05 截止 剩2天</p>
-          </div>
-        </div>
-        <h2 class="list_title ellipsis">测试排版</h2>
-        <div class="item_state">
-          <span>
-            <van-circle
-              v-model="currentRate"
-              :rate="30"
-              :speed="100"
-              size="14px"
-              layer-color="#ebedf0"
-            />
-          </span>
-          <span class="status learn_unend">已学0%</span>
-        </div>
-      </li>
-      <li class="qwui-learn_item">
-        <div class="list_cover">
-          <div class="cover_wrap">
-            <img
-              src="https://qwyimg.do1.com.cn/fileweb/compress/upload/img/4ab7e1bffe8f4201b99f5d4d160a668f/20190529/046ff26b6e60451d8148be3cf51cf78e.jpeg"
-              alt=""
-            />
-          </div>
-          <div class="cover_info">
-            <p class="info_wrap stopTime_wrap">2019-06-05 截止 剩2天</p>
-          </div>
-        </div>
-        <h2 class="list_title ellipsis">测试排版</h2>
+        <h2 class="list_title ellipsis">{{ item.kcmc }}</h2>
         <div class="item_state">
           <span>
             <van-circle
@@ -80,25 +25,72 @@
         </div>
       </li>
     </ul>
-    <p class="desc">共3节课</p>
+    <p v-if="sourceArr.length" class="desc">共{{ sourceArr.length }}节课</p>
   </div>
 </template>
 <script>
 import { Circle } from "vant";
+import { getCourses } from "@/api/index.js";
 export default {
   name: "learn-home",
   data() {
     return {
       value: "",
       activeNames: ["1"],
-      currentRate: 0
+      currentRate: 0,
+      PageSize: 10,
+      currentIndex: 1,
+      keyword: "",
+      type: 1,
+      kklx: "",
+      sourceArr: []
     };
   },
   mounted() {
-    console.log(this.$route);
+    this.type = this.$route.query.type;
+    this.getList();
+    // if (this.type === "1") {
+    //   this.kklx = "必修课";
+    // } else if (this.type === "2") {
+    //   this.kklx = "选修课";
+    // }
   },
   components: {
     "van-circle": Circle
+  },
+  methods: {
+    async getList() {
+      const params = {
+        userid: 110,
+        keyword: this.keyword,
+        kklx: this.kklx,
+        pageIndex: this.currentIndex,
+        pageSize: this.PageSize
+      };
+      const { status, data } = await getCourses(params);
+      if (status !== 200) return;
+      this.formatArray(data.data.Items);
+    },
+    //初始化数据
+    formatArray(items) {
+      console.log(items);
+      if (items.length > 0) {
+        const optionalArr = [];
+        const mandatoryArr = [];
+        items.map(item => {
+          if (item.kklx == "选修课") {
+            optionalArr.push(item);
+          } else if (item.kklx == "必修课") {
+            mandatoryArr.push(item);
+          }
+        });
+        if (this.type == 1) {
+          this.sourceArr = mandatoryArr;
+        } else if (this.type == 2) {
+          this.sourceArr = optionalArr;
+        }
+      }
+    }
   }
 };
 </script>
