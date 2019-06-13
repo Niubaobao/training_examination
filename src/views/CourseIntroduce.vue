@@ -2,10 +2,9 @@
   <div class="scroll_wrap">
     <div class="preview_wrap">
       <!-- 视频 -->
-      <div
-        class="cover_wrap"
-        style="background-image:url(`http://dzjc.ruantechnology.com${data.kcfm}`)"
-      ></div>
+      <div class="cover_wrap">
+        <img :src="`http://dzjc.ruantechnology.com${data.kcfm}`" alt="" />
+      </div>
       <!-- 朦层 -->
       <div class="tip_warp">
         <div class="tip_box">
@@ -27,61 +26,48 @@
     <div v-if="tab === 0" class="introduce">
       <div class="introduce_wrap">
         <div class="course_info">
-          <p class="course_title">大数据分析基础</p>
+          <p class="course_title">{{ data.kcmc }}</p>
           <p class="learn_num">0 人学完</p>
         </div>
         <div class="course_info">
           <p class="course_title">课程简介</p>
-          <p class="learn_num">test</p>
+          <p class="learn_num">{{ data.kcjj }}</p>
         </div>
         <div class="course_info">
           <p class="course_title">适用人群</p>
-          <p class="learn_num">额</p>
+          <p class="learn_num">{{ data.syrq }}</p>
         </div>
         <div class="course_info">
           <p class="course_title">
-            可程学分 <span class="course_credit_num">100</span>
+            可程学分 <span class="course_credit_num">{{ data.kcxf }}</span>
           </p>
         </div>
       </div>
     </div>
     <!-- 目录 -->
     <div v-if="tab === 1" class="catalogue">
-      <van-collapse v-model="activeNames">
-        <van-collapse-item title="标题" name="1">
-          <ul class="chapter_list">
-            <li class="courseware">
-              <div class="course_info">
-                <p class="course_name">10.01.jpg</p>
-                <p class="learn_time">0分钟/5分钟</p>
-              </div>
-              <div class="course_state">
-                <van-circle
-                  v-model="currentRate"
-                  size="20px"
-                  layer-color="#ebedf0"
-                  :rate="30"
-                  :speed="100"
-                />
-              </div>
-            </li>
-            <li class="courseware">
-              <div class="course_info">
-                <p class="course_name">10.01.jpg</p>
-                <p class="learn_time">0分钟/5分钟</p>
-              </div>
-              <div class="course_state">
-                <van-circle
-                  v-model="currentRate"
-                  size="20px"
-                  layer-color="#ebedf0"
-                  :rate="30"
-                  :speed="100"
-                />
-              </div>
-            </li>
-          </ul>
-        </van-collapse-item>
+      <van-collapse v-model="activeNames" accordion @change="onChange">
+        <div v-for="(item, index) in catalogue" :key="item.zjid">
+          <van-collapse-item :title="item.zjmc" :name="index">
+            <ul class="chapter_list">
+              <li class="courseware" v-for="itm in item.zjnr" :key="itm.kjid">
+                <div class="course_info">
+                  <p class="course_name">{{ itm.kjmc }}</p>
+                  <p class="learn_time">0分钟/{{ itm.xxsc }}分钟</p>
+                </div>
+                <div class="course_state">
+                  <van-circle
+                    v-model="currentRate"
+                    size="20px"
+                    layer-color="#ebedf0"
+                    :rate="30"
+                    :speed="100"
+                  />
+                </div>
+              </li>
+            </ul>
+          </van-collapse-item>
+        </div>
       </van-collapse>
     </div>
   </div>
@@ -97,7 +83,7 @@ export default {
     return {
       tab: 0,
       currentRate: 0,
-      activeNames: ["1"],
+      activeNames: "",
       id: "",
       data: {},
       catalogue: [] //目录
@@ -113,6 +99,9 @@ export default {
     this.getCourseInfo();
   },
   methods: {
+    onChange(event) {
+      this.activeName = event.detail;
+    },
     async getCourseInfo() {
       const params = {
         courseid: this.id
@@ -143,8 +132,10 @@ export default {
     .cover_wrap {
       width: 100%;
       height: 100%;
-      background-size: cover;
-      background-repeat: no-repeat;
+    }
+    .cover_wrap img {
+      width: 100%;
+      height: 100%;
     }
     .tip_warp {
       position: absolute;

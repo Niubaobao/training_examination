@@ -1,7 +1,12 @@
 <template>
   <div class="content-wapper">
     <ul class="list_content">
-      <li class="qwui-learn_item" v-for="item in sourceArr" :key="item.kcid">
+      <li
+        class="qwui-learn_item"
+        v-for="item in sourceArr"
+        :key="item.kcid"
+        @click="goDetail(item.kcid)"
+      >
         <div class="list_cover">
           <div class="cover_wrap">
             <img :src="`http://dzjc.ruantechnology.com${item.kcfm}`" alt="" />
@@ -47,18 +52,27 @@ export default {
     };
   },
   mounted() {
-    this.type = this.$route.query.type;
+    this.type = Number(this.$route.query.type);
+    if (this.type === 1) {
+      this.kklx = "02";
+    } else if (this.type === 2) {
+      this.kklx = "01";
+    }
     this.getList();
-    // if (this.type === "1") {
-    //   this.kklx = "必修课";
-    // } else if (this.type === "2") {
-    //   this.kklx = "选修课";
-    // }
   },
   components: {
     "van-circle": Circle
   },
   methods: {
+    //跳转详情
+    goDetail(id) {
+      this.$router.push({
+        path: "/course-introduce",
+        query: {
+          id: id
+        }
+      });
+    },
     async getList() {
       const params = {
         userid: 110,
@@ -69,7 +83,8 @@ export default {
       };
       const { status, data } = await getCourses(params);
       if (status !== 200) return;
-      this.formatArray(data.data.Items);
+      this.sourceArr = data.data.Items;
+      // this.formatArray(data.data.Items);
     },
     //初始化数据
     formatArray(items) {
