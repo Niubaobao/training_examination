@@ -19,11 +19,16 @@
                 </span>
               </div>
               <ul class="list_content">
-                <li class="qwui-learn_item">
+                <li
+                  class="qwui-learn_item"
+                  v-for="item in mandatoryArr"
+                  :key="item.kcid"
+                  @click="goDetailPage(item.kcid)"
+                >
                   <div class="list_cover">
                     <div class="cover_wrap">
                       <img
-                        src="https://qwyimg.do1.com.cn/fileweb/compress/upload/img/4ab7e1bffe8f4201b99f5d4d160a668f/20190529/046ff26b6e60451d8148be3cf51cf78e.jpeg"
+                        :src="`http://dzjc.ruantechnology.com${item.kcfm}`"
                         alt=""
                       />
                     </div>
@@ -33,7 +38,7 @@
                       </p>
                     </div>
                   </div>
-                  <h2 class="list_title ellipsis">测试排版</h2>
+                  <h2 class="list_title ellipsis">{{ item.kcmc }}</h2>
                   <div class="item_state">
                     <span>
                       <van-circle
@@ -60,11 +65,16 @@
                 </span>
               </div>
               <ul class="list_content">
-                <li class="qwui-learn_item">
+                <li
+                  class="qwui-learn_item"
+                  v-for="item in optionalArr"
+                  :key="item.kcid"
+                  @click="goDetailPage(item.kcid)"
+                >
                   <div class="list_cover">
                     <div class="cover_wrap">
                       <img
-                        src="https://qwyimg.do1.com.cn/fileweb/compress/upload/img/4ab7e1bffe8f4201b99f5d4d160a668f/20190529/046ff26b6e60451d8148be3cf51cf78e.jpeg"
+                        :src="`http://dzjc.ruantechnology.com${item.kcfm}`"
                         alt=""
                       />
                     </div>
@@ -74,7 +84,7 @@
                       </p>
                     </div>
                   </div>
-                  <h2 class="list_title ellipsis">测试排版</h2>
+                  <h2 class="list_title ellipsis">{{ item.kcmc }}</h2>
                   <div class="item_state">
                     <span>
                       <van-circle
@@ -112,22 +122,55 @@ export default {
   },
   data() {
     return {
+      optionalArr: [], //选修课
+      mandatoryArr: [], //必休课
       value: "",
       activeNames: ["1"],
-      currentRate: 0
+      currentRate: 0,
+      PageSize: 10,
+      currentIndex: 1,
+      keyword: ""
     };
   },
   mounted() {
     this.getList();
   },
   methods: {
+    //课程详情
+    goDetailPage(id) {
+      this.$router.push({
+        path: "/course-introduce",
+        query: { id: id }
+      });
+    },
     async getList() {
       const params = {
         userid: 110,
-        keyword: "大数据"
+        keyword: this.keyword,
+        kklx: "",
+        pageIndex: this.currentIndex,
+        pageSize: this.PageSize
       };
-      const res = await getCourses(params);
-      console.log(res);
+      const { status, data } = await getCourses(params);
+      if (status !== 200) return;
+      this.formatArray(data.data.Items);
+    },
+    //初始化数据
+    formatArray(items) {
+      if (items.length > 0) {
+        const optionalArr = [];
+        const mandatoryArr = [];
+        items.map(item => {
+          if (item.kklx === "选修课") {
+            optionalArr.push(item);
+          } else if (item.kklx === "必修课") {
+            mandatoryArr.push(item);
+          }
+        });
+        this.optionalArr = optionalArr;
+        this.mandatoryArr = mandatoryArr;
+        console.log(this.mandatoryArr);
+      }
     },
     goDetail(value) {
       this.$router.push({
