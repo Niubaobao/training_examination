@@ -3,14 +3,24 @@
     <div class="preview_wrap">
       <!-- 视频 -->
       <div class="cover_wrap">
-        <img :src="`http://dzjc.ruantechnology.com${data.kcfm}`" alt="" />
+        <div class="test_two_box">
+          <!-- vjs-big-play-centered -->
+          <video ref="myVideo" class="video-js">
+            <source src="//vjs.zencdn.net/v/oceans.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <img
+          :src="`http://dzjc.ruantechnology.com${data.kcfm}`"
+          v-if="posterBtn"
+          alt=""
+        />
       </div>
       <!-- 朦层 -->
-      <div class="tip_warp">
+      <div class="tip_warp" v-if="posterBtn">
         <div class="tip_box">
           <div>
             <p class="tip_last_learn">最近学习到：图文课件测试</p>
-            <div class="tip_btn">继续学习</div>
+            <div class="tip_btn" @click="playVideo">继续学习</div>
           </div>
         </div>
       </div>
@@ -53,15 +63,17 @@
               <li class="courseware" v-for="itm in item.zjnr" :key="itm.kjid">
                 <div class="course_info">
                   <p class="course_name">{{ itm.kjmc }}</p>
-                  <p class="learn_time">0分钟/{{ itm.xxsc }}分钟</p>
+                  <p class="learn_time">
+                    {{ itm.yxsc }}分钟/{{ itm.xxsc }}分钟
+                  </p>
                 </div>
                 <div class="course_state">
                   <van-circle
                     v-model="currentRate"
                     size="20px"
                     layer-color="#ebedf0"
-                    :rate="30"
-                    :speed="100"
+                    :rate="Number((itm.yxsc / itm.xxsc).toFixed(2))"
+                    :speed="1"
                   />
                 </div>
               </li>
@@ -81,6 +93,8 @@ export default {
   name: "course-introduce",
   data() {
     return {
+      video: "",
+      posterBtn: true,
       tab: 0,
       currentRate: 0,
       activeNames: "",
@@ -96,9 +110,33 @@ export default {
   },
   mounted() {
     this.id = this.$route.query.id;
-    this.getCourseInfo();
+    this.$nextTick(() => {
+      this.initVideo();
+      this.getCourseInfo();
+    });
   },
   methods: {
+    // 点击开始播放视频
+    playVideo() {
+      this.video.play();
+      this.posterBtn = false;
+    },
+    //初始化video
+    initVideo() {
+      console.log(this.$refs.myVideo);
+      this.video = this.$video(this.$refs.myVideo, {
+        //确定播放器是否具有用户可以与之交互的控件。没有控件，启动视频播放的唯一方法是使用autoplay属性或通过Player API。
+        controls: true,
+        //自动播放属性,muted:静音播放
+        // autoplay: "muted",
+        //建议浏览器是否应在<video>加载元素后立即开始下载视频数据。
+        preload: "auto",
+        //设置视频播放器的显示宽度（以像素为单位）
+        width: "100%",
+        //设置视频播放器的显示高度（以像素为单位）
+        height: "400px"
+      });
+    },
     onChange(event) {
       this.activeName = event.detail;
     },
@@ -121,6 +159,12 @@ export default {
 /deep/ .van-collapse-item__content {
   padding: 0;
 }
+/deep/ .vjs-big-play-butto {
+  background: red;
+}
+/deep/ .vjs-big-play-button {
+  display: none;
+}
 .scroll_wrap {
   p {
     margin: 0;
@@ -132,8 +176,20 @@ export default {
     .cover_wrap {
       width: 100%;
       height: 100%;
+      .test_two_box {
+        width: 100%;
+        height: 100%;
+        .video-js {
+          width: 100%;
+          height: 100%;
+          position: relative;
+        }
+      }
     }
     .cover_wrap img {
+      position: absolute;
+      left: 0;
+      top: 0;
       width: 100%;
       height: 100%;
     }

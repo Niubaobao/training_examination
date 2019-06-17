@@ -1,5 +1,8 @@
 <template>
   <div class="content-wapper">
+    <!--  -->
+    <div class="loadmore"></div>
+    <!--  -->
     <ul class="list_content">
       <li
         class="qwui-learn_item"
@@ -12,7 +15,9 @@
             <img :src="`http://dzjc.ruantechnology.com${item.kcfm}`" alt="" />
           </div>
           <div class="cover_info">
-            <p class="info_wrap stopTime_wrap">2019-06-05 截止 剩2天</p>
+            <p class="info_wrap stopTime_wrap">
+              {{ item.wcsj }} 截止 剩{{ item.syts }}天
+            </p>
           </div>
         </div>
         <h2 class="list_title ellipsis">{{ item.kcmc }}</h2>
@@ -20,13 +25,13 @@
           <span>
             <van-circle
               v-model="currentRate"
-              :rate="30"
-              :speed="100"
+              :rate="item.xxjd"
+              :speed="1"
               size="14px"
               layer-color="#ebedf0"
             />
           </span>
-          <span class="status learn_unend">已学0%</span>
+          <span class="status learn_unend">已学{{ item.xxjd * 100 }}%</span>
         </div>
       </li>
     </ul>
@@ -40,6 +45,9 @@ export default {
   name: "learn-home",
   data() {
     return {
+      error: false,
+      finished: false, //控制在页面往下移动到底部时是否调用接口获取数据
+      loading: false, //控制上啦加载的加载动画
       value: "",
       activeNames: ["1"],
       currentRate: 0,
@@ -64,6 +72,10 @@ export default {
     "van-circle": Circle
   },
   methods: {
+    //页面初始化之后会触发一次，在页面往下加载的过程中会多次调用【上拉加载】
+    onLoad() {},
+    //下拉刷新
+    onRefresh() {},
     //跳转详情
     goDetail(id) {
       this.$router.push({
@@ -112,6 +124,10 @@ export default {
 
 <style lang="less" scoped>
 .content-wapper {
+  width: 100%;
+  li {
+    list-style: none;
+  }
   p {
     margin: 0;
   }
