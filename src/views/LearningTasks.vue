@@ -5,7 +5,8 @@
         <van-search
           style="border-bottom:1px solid #eeeeee"
           placeholder="搜索"
-          v-model="value"
+          v-model="keyword"
+          @search="getList"
         />
         <div class="content">
           <div class="qwui-lean_task">
@@ -34,7 +35,7 @@
                     </div>
                     <div class="cover_info">
                       <p class="info_wrap stopTime_wrap">
-                        2019-06-05 截止 剩2天
+                        {{ item.wcsj }} 截止 剩{{ item.syts }}天
                       </p>
                     </div>
                   </div>
@@ -43,13 +44,15 @@
                     <span>
                       <van-circle
                         v-model="currentRate"
-                        :rate="30"
-                        :speed="100"
+                        :rate="item.xxjd"
+                        :speed="1"
                         size="14px"
                         layer-color="#ebedf0"
                       />
                     </span>
-                    <span class="status learn_unend">已学0%</span>
+                    <span class="status learn_unend"
+                      >已学{{ item.xxjd * 100 }}%</span
+                    >
                   </div>
                 </li>
               </ul>
@@ -78,24 +81,27 @@
                         alt=""
                       />
                     </div>
-                    <div class="cover_info">
+                    <!-- 选修课没有完成时间 -->
+                    <!-- <div class="cover_info">
                       <p class="info_wrap stopTime_wrap">
                         2019-06-05 截止 剩2天
                       </p>
-                    </div>
+                    </div> -->
                   </div>
                   <h2 class="list_title ellipsis">{{ item.kcmc }}</h2>
                   <div class="item_state">
                     <span>
                       <van-circle
                         v-model="currentRate"
-                        :rate="30"
-                        :speed="100"
+                        :rate="item.xxjd"
+                        :speed="1"
                         size="14px"
                         layer-color="#ebedf0"
                       />
                     </span>
-                    <span class="status learn_unend">已学0%</span>
+                    <span class="status learn_unend"
+                      >已学{{ item.xxjd * 100 }}%</span
+                    >
                   </div>
                 </li>
               </ul>
@@ -124,7 +130,6 @@ export default {
     return {
       optionalArr: [], //选修课
       mandatoryArr: [], //必休课
-      value: "",
       activeNames: ["1"],
       currentRate: 0,
       PageSize: 10,
