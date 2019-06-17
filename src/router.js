@@ -31,6 +31,18 @@ const router = new Router({
       component: () => import("./views/ExamAssessDetail.vue")
     },
     {
+      // 考试测评-结果
+      path: "/exam-assess-result",
+      name: "exam-assess-result",
+      component: () => import("./views/ExamAssessResult.vue")
+    },
+    {
+      // 考试测评-进行中
+      path: "/exam-assessing",
+      name: "exam-assessing",
+      component: () => import("./views/ExamAssessing.vue")
+    },
+    {
       // 个人中心
       path: "/personal-center",
       name: "personal-center",
