@@ -9,9 +9,11 @@
             <source src="//vjs.zencdn.net/v/oceans.mp4" type="video/mp4" />
           </video>
         </div>
+        <!-- data.kcfm -->
         <img
-          :src="`http://dzjc.ruantechnology.com${data.kcfm}`"
+          :src="`http://dzjc.ruantechnology.com${headerBg}`"
           v-if="posterBtn"
+          style="z-index:10"
           alt=""
         />
       </div>
@@ -19,7 +21,7 @@
       <div class="tip_warp" v-if="posterBtn">
         <div class="tip_box">
           <div>
-            <p class="tip_last_learn">最近学习到：图文课件测试</p>
+            <p class="tip_last_learn">最近学习到：{{ currentTitle }}</p>
             <div class="tip_btn" @click="playVideo">继续学习</div>
           </div>
         </div>
@@ -60,9 +62,19 @@
         <div v-for="(item, index) in catalogue" :key="item.zjid">
           <van-collapse-item :title="item.zjmc" :name="index">
             <ul class="chapter_list">
-              <li class="courseware" v-for="itm in item.zjnr" :key="itm.kjid">
+              <li
+                class="courseware"
+                v-for="itm in item.zjnr"
+                :key="itm.kjid"
+                @click="startLearn(itm)"
+              >
                 <div class="course_info">
-                  <p class="course_name">{{ itm.kjmc }}</p>
+                  <p
+                    class="course_name"
+                    :class="{ activeName: itm.zjxx === 1 }"
+                  >
+                    {{ itm.kjmc }}
+                  </p>
                   <p class="learn_time">
                     {{ itm.yxsc }}分钟/{{ itm.xxsc }}分钟
                   </p>
@@ -72,8 +84,8 @@
                     v-model="currentRate"
                     size="20px"
                     layer-color="#ebedf0"
-                    :rate="Number((itm.yxsc / itm.xxsc).toFixed(2))"
-                    :speed="1"
+                    :rate="formatValue(itm)"
+                    :speed="100"
                   />
                 </div>
               </li>
@@ -86,13 +98,18 @@
 </template>
 
 <script>
-import { Collapse, CollapseItem, Circle } from "vant";
+import { Collapse, CollapseItem, Circle, ImagePreview } from "vant";
 import { getCourseInfo } from "@/api/index.js";
 
 export default {
   name: "course-introduce",
   data() {
     return {
+      headerBg: "",
+      show: false,
+      index: 1,
+      images: [],
+      currentTitle: "",
       video: "",
       posterBtn: true,
       tab: 0,
@@ -116,6 +133,30 @@ export default {
     });
   },
   methods: {
+    formatValue(item) {
+      console.log(item.yxsc / item.xxsc) * 100;
+      return (item.yxsc / item.xxsc) * 100;
+    },
+    initImage() {
+      ImagePreview({
+        images: this.images,
+        onClose: this.onClose
+      });
+    },
+    onClose() {
+      console.log("onClose");
+      this.images = [];
+    },
+    //点击开始学习
+    startLearn(item) {
+      if (item.kjlx === "01") {
+        //图片链接
+        const str = `http://dzjc.ruantechnology.com${item.kjnr}`;
+        this.headerBg = item.kjnr;
+        this.images.push(str);
+        this.initImage();
+      }
+    },
     // 点击开始播放视频
     playVideo() {
       this.video.play();
@@ -148,6 +189,23 @@ export default {
       if (status !== 200) return;
       this.data = data.data;
       this.catalogue = data.data.kcnr;
+      this.headerBg = data.data.kcfm;
+      this.findCurrentTitle(data.data.kcnr);
+    },
+    findCurrentTitle(arr) {
+      if (!arr.length) return;
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].zjnr) {
+          for (let j = 0; j < arr[i].zjnr.length; j++) {
+            if (arr[i].zjnr[j].zjxx === 1) {
+              console.log(i, j);
+              this.currentTitle = arr[i].zjnr[j].kjmc;
+              return;
+            }
+          }
+        }
+      }
+      return arr;
     }
   }
 };
@@ -313,6 +371,9 @@ export default {
             word-wrap: normal;
             text-overflow: ellipsis;
             overflow: hidden;
+          }
+          .activeName {
+            color: red;
           }
           .learn_time {
             font-size: 13px;
