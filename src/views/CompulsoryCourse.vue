@@ -24,14 +24,14 @@
         <div class="item_state">
           <span>
             <van-circle
-              v-model="currentRate"
+              v-model="item.currentRate"
               :rate="item.xxjd"
-              :speed="1"
+              :speed="100"
               size="14px"
               layer-color="#ebedf0"
             />
           </span>
-          <span class="status learn_unend">已学{{ item.xxjd * 100 }}%</span>
+          <span class="status learn_unend">已学{{ formatValue(item) }}</span>
         </div>
       </li>
     </ul>
@@ -72,6 +72,9 @@ export default {
     "van-circle": Circle
   },
   methods: {
+    formatValue(item) {
+      return `${parseInt(item.xxjd * 100)}%`;
+    },
     //页面初始化之后会触发一次，在页面往下加载的过程中会多次调用【上拉加载】
     onLoad() {},
     //下拉刷新
@@ -95,8 +98,18 @@ export default {
       };
       const { status, data } = await getCourses(params);
       if (status !== 200) return;
-      this.sourceArr = data.data.Items;
+      if (data.data.Items.length === 0) {
+        this.sourceArr = [];
+      } else {
+        this.formatPrec(data.data.Items);
+      }
       // this.formatArray(data.data.Items);
+    },
+    formatPrec(arr) {
+      arr.map(item => {
+        item.currentRate = 0;
+      });
+      this.sourceArr = arr;
     },
     //初始化数据
     formatArray(items) {

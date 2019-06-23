@@ -43,7 +43,7 @@
                   <div class="item_state">
                     <span>
                       <van-circle
-                        v-model="currentRate"
+                        v-model="item.currentRate"
                         :rate="item.xxjd * 100"
                         :speed="100"
                         size="14px"
@@ -51,7 +51,7 @@
                       />
                     </span>
                     <span class="status learn_unend"
-                      >已学{{ item.xxjd * 100 }}%</span
+                      >已学{{ formatPrec(item) }}</span
                     >
                   </div>
                 </li>
@@ -100,7 +100,7 @@
                       />
                     </span>
                     <span class="status learn_unend"
-                      >已学{{ item.xxjd * 100 }}%</span
+                      >已学{{ formatPrec(item) }}</span
                     >
                   </div>
                 </li>
@@ -142,6 +142,9 @@ export default {
     this.getList();
   },
   methods: {
+    formatPrec(item) {
+      return `${parseInt(item.xxjd * 100)}%`;
+    },
     //课程详情
     goDetailPage(id) {
       this.$router.push({
@@ -167,15 +170,17 @@ export default {
         const optionalArr = [];
         const mandatoryArr = [];
         items.map(item => {
-          if (item.kklx === "选修课") {
-            optionalArr.push(item);
-          } else if (item.kklx === "必修课") {
-            mandatoryArr.push(item);
+          console.log(item);
+          const ite = Object.assign({}, item, { currentRate: 0 });
+          if (ite.kklx === "选修课") {
+            optionalArr.push(ite);
+          } else if (ite.kklx === "必修课") {
+            mandatoryArr.push(ite);
           }
         });
         this.optionalArr = optionalArr;
         this.mandatoryArr = mandatoryArr;
-        console.log(this.mandatoryArr);
+        console.log(this.mandatoryArr, this.optionalArr);
       }
     },
     goDetail(value) {
