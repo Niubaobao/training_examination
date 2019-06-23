@@ -1,10 +1,10 @@
 <template>
   <div class="contentWapper">
     <div class="header-wapper">
-      <div class="item" :class="{ active: tab === 0 }" @click="tab = 0">
+      <div class="item" :class="{ active: tab === 0 }" @click="changeTab(0)">
         学习中
       </div>
-      <div class="item" :class="{ active: tab === 1 }" @click="tab = 1">
+      <div class="item" :class="{ active: tab === 1 }" @click="changeTab(1)">
         已完成
       </div>
       <div class="bot-line" :class="address">
@@ -14,12 +14,13 @@
     <!-- 学习中 -->
     <div v-if="tab === 0">
       <div class="courseList">
-        <div class="qwui-learn_list_item clearfix">
+        <div
+          class="qwui-learn_list_item clearfix"
+          v-for="item in dataArr"
+          :key="item.kcid"
+        >
           <div class="item_img_wrap">
-            <img
-              src="https://qwyimg.do1.com.cn/fileweb/compress/upload/img/4ab7e1bffe8f4201b99f5d4d160a668f/20190529/046ff26b6e60451d8148be3cf51cf78e.jpeg"
-              alt=""
-            />
+            <img :src="`http://dzjc.ruantechnology.com/${item.kcfm}`" alt="" />
           </div>
           <!-- 进度 -->
           <div class="item_rate">
@@ -37,44 +38,57 @@
             <div class="desc">已学习</div>
           </div>
           <p class="item_subjectName">
-            大数据分析大数据分析大数据分析
-          </p>
-        </div>
-        <div class="qwui-learn_list_item clearfix">
-          <div class="item_img_wrap">
-            <img
-              src="https://qwyimg.do1.com.cn/fileweb/compress/upload/img/4ab7e1bffe8f4201b99f5d4d160a668f/20190529/046ff26b6e60451d8148be3cf51cf78e.jpeg"
-              alt=""
-            />
-          </div>
-          <!-- 进度 -->
-          <div class="item_rate">
-            <div class="rate">
-              <van-circle
-                font-size="12px;"
-                v-model="currentRate"
-                :rate="30"
-                :speed="100"
-                size="45px"
-                layer-color="#ebedf0"
-                :text="text"
-              />
-            </div>
-            <div class="desc">已学习</div>
-          </div>
-          <p class="item_subjectName">
-            大数据分析大数据分析大数据分析
+            {{ item.kcmc }}
           </p>
         </div>
       </div>
       <div class="qwui-showMoreList">
-        <p>共 2 条</p>
+        <p>共 {{ dataArr.length || 0 }} 条</p>
       </div>
     </div>
     <!-- 已完成 -->
     <div v-if="tab === 1">
+      <!--  -->
+      <div v-if="dataArr.length">
+        <div class="courseList">
+          <div
+            class="qwui-learn_list_item clearfix"
+            v-for="item in dataArr"
+            :key="item.kcid"
+          >
+            <div class="item_img_wrap">
+              <img
+                :src="`http://dzjc.ruantechnology.com/${item.kcfm}`"
+                alt=""
+              />
+            </div>
+            <!-- 进度 -->
+            <div class="item_rate">
+              <div class="rate">
+                <van-circle
+                  font-size="12px;"
+                  v-model="currentRate"
+                  :rate="30"
+                  :speed="100"
+                  size="45px"
+                  layer-color="#ebedf0"
+                  :text="text"
+                />
+              </div>
+              <div class="desc">已学习</div>
+            </div>
+            <p class="item_subjectName">
+              {{ item.kcmc }}
+            </p>
+          </div>
+        </div>
+        <div class="qwui-showMoreList">
+          <p>共 {{ dataArr.length || 0 }} 条</p>
+        </div>
+      </div>
+
       <!-- 空记录 -->
-      <div class="qwui-no_record_box">
+      <div class="qwui-no_record_box" v-if="!dataArr.length">
         <div>
           <van-icon name="description" size="130px" color="#eeeeee" />
         </div>
@@ -87,12 +101,14 @@
 <script>
 // @ is an alias to /src
 import { Circle, Icon } from "vant";
+import { GetUserRecentCourses } from "@/api/index.js";
 export default {
   name: "learn-history",
   data() {
     return {
       tab: 0,
-      currentRate: 0
+      currentRate: 0,
+      dataArr: []
     };
   },
   computed: {
@@ -103,9 +119,27 @@ export default {
       return this.currentRate.toFixed(0) + "%";
     }
   },
+  mounted() {
+    this.GetUserRecentCourses(0);
+  },
   components: {
     "van-circle": Circle,
     "van-icon": Icon
+  },
+  methods: {
+    changeTab(value) {
+      this.tab = value;
+      this.GetUserRecentCourses(value);
+    },
+    async GetUserRecentCourses(value) {
+      const params = {
+        userid: "110",
+        sfwc: value
+      };
+      const { status, data } = await GetUserRecentCourses(params);
+      if (status !== 200) return;
+      this.dataArr = data.data;
+    }
   }
 };
 </script>
@@ -183,10 +217,12 @@ export default {
       overflow: hidden;
       img {
         position: relative;
-        height: 64px;
-        width: auto;
-        max-width: none;
-        left: -6.5px;
+        width: 100%;
+        height: 100%;
+        // height: 64px;
+        // width: auto;
+        // max-width: none;
+        // left: -6.5px;
       }
     }
     .item_subjectName {

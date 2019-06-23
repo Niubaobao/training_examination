@@ -20,9 +20,17 @@
       <!-- 朦层 -->
       <div class="tip_warp" v-if="posterBtn">
         <div class="tip_box">
-          <div>
+          <div v-if="currentTitle">
             <p class="tip_last_learn">最近学习到：{{ currentTitle }}</p>
             <div class="tip_btn" @click="playVideo">继续学习</div>
+          </div>
+          <div v-if="!currentTitle">
+            <img
+              @click="playVideo"
+              style="width:50px;height:50px;margin-top:20px"
+              src="../assets/images/start1.png"
+              alt=""
+            />
           </div>
         </div>
       </div>
@@ -105,6 +113,7 @@ export default {
   name: "course-introduce",
   data() {
     return {
+      currentData: {},
       headerBg: "",
       show: false,
       index: 1,
@@ -134,7 +143,6 @@ export default {
   },
   methods: {
     formatValue(item) {
-      console.log(item.yxsc / item.xxsc) * 100;
       return (item.yxsc / item.xxsc) * 100;
     },
     initImage() {
@@ -144,27 +152,41 @@ export default {
       });
     },
     onClose() {
-      console.log("onClose");
       this.images = [];
     },
     //点击开始学习
     startLearn(item) {
-      if (item.kjlx === "01") {
-        //图片链接
-        const str = `http://dzjc.ruantechnology.com${item.kjnr}`;
-        this.headerBg = item.kjnr;
-        this.images.push(str);
-        this.initImage();
-      }
+      this.$router.push({
+        path: "/learn-resources",
+        query: {
+          id: item.kjid
+        }
+      });
+      // if (item.kjlx === "01") {
+      //   //图片链接
+      //   const str = `http://dzjc.ruantechnology.com${item.kjnr}`;
+      //   this.headerBg = item.kjnr;
+      //   this.images.push(str);
+      //   this.initImage();
+      // }
     },
     // 点击开始播放视频
     playVideo() {
-      this.video.play();
-      this.posterBtn = false;
+      if (this.currentData.kjlx !== "06") {
+        this.$router.push({
+          path: "/learn-resources",
+          query: {
+            id: this.currentData.kjid
+          }
+        });
+        return;
+      } else {
+        this.video.play();
+        this.posterBtn = false;
+      }
     },
     //初始化video
     initVideo() {
-      console.log(this.$refs.myVideo);
       this.video = this.$video(this.$refs.myVideo, {
         //确定播放器是否具有用户可以与之交互的控件。没有控件，启动视频播放的唯一方法是使用autoplay属性或通过Player API。
         controls: true,
@@ -191,6 +213,9 @@ export default {
       this.catalogue = data.data.kcnr;
       this.headerBg = data.data.kcfm;
       this.findCurrentTitle(data.data.kcnr);
+      if (!this.currentTitle) {
+        this.currentData = data.data.kcnr[0].zjnr[0];
+      }
     },
     findCurrentTitle(arr) {
       if (!arr.length) return;
@@ -198,7 +223,7 @@ export default {
         if (arr[i].zjnr) {
           for (let j = 0; j < arr[i].zjnr.length; j++) {
             if (arr[i].zjnr[j].zjxx === 1) {
-              console.log(i, j);
+              this.currentData = arr[i].zjnr[j];
               this.currentTitle = arr[i].zjnr[j].kjmc;
               return;
             }

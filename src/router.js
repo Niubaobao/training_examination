@@ -71,6 +71,20 @@ const router = new Router({
       path: "/course-introduce",
       name: "course-introduce",
       component: () => import("./views/CourseIntroduce.vue")
+    },
+    {
+      // 学习资源
+      path: "/learn-resources",
+      name: "learn-resources",
+      component: () => import("./views/learnResources.vue")
+    },
+    {
+      path: "/examination-reg",
+      name: "epoliceReg",
+      component: () => import("./views/examinationReg"),
+      meta: {
+        title: "用户注册"
+      }
     }
   ]
 });

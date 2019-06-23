@@ -28,3 +28,18 @@ export const registerUser = params =>
 //获取签名
 export const GetSignatureInfoByUrl = params =>
   instance.get("ElectronicPolice/user/GetSignatureInfoByUrl", { params });
+//个人中心
+export const GetUserInfoCenter = params =>
+  instance.get("electronictraining/UserInfo/GetUserInfo", { params });
+// 资源id
+export const GetCourseWareInfo = params =>
+  instance.get("/electronictraining/Course/GetCourseWareInfo", { params });
+// 提交学习时间
+export const UpdateUserCourseware = params =>
+  instance.post("/electronictraining/Course/UpdateUserCourseware", params);
+//用户注册
+export const RegisterUser = params =>
+  instance.post("electronicpolice/User/RegisterUser", params);
+//最近学习
+export const GetUserRecentCourses = params =>
+  instance.get("/electronictraining/Course/GetUserRecentCourses", { params });

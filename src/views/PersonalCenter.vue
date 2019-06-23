@@ -10,18 +10,22 @@
               alt=""
             />
           </div>
-          <p class="lean_user_name">张亚超</p>
+          <p class="lean_user_name">{{ userInfo.xm }}</p>
           <div class="lean_user_info qwui-flexbox">
             <div class="qwui-flexItem info_item">
-              <p>0</p>
+              <p>{{ userInfo.zxf || 0 }}</p>
               <p class="lable total_score">总学分</p>
             </div>
             <div class="qwui-flexItem info_item">
-              <p>0小时0分钟</p>
+              <p>
+                {{ formatTime(userInfo.xxsc) }}小时{{
+                  (userInfo.xxsc || 0) % 60
+                }}分钟
+              </p>
               <p class="lable">学习时长</p>
             </div>
             <div class="qwui-flexItem info_item">
-              <p>2</p>
+              <p>{{ userInfo.xxkc || 0 }}</p>
               <p class="lable">学习课程</p>
             </div>
           </div>
@@ -51,10 +55,15 @@
 // @ is an alias to /src
 import PageWithTab from "@/components/PageWithTab.vue";
 import { Cell } from "vant";
-import { getUserInfo } from "@/api/index.js";
+import { GetUserInfoCenter } from "@/api/index.js";
 
 export default {
   name: "personal-center",
+  data() {
+    return {
+      userInfo: {}
+    };
+  },
   components: {
     PageWithTab,
     "van-cell": Cell
@@ -63,12 +72,18 @@ export default {
     this.getUserInfo();
   },
   methods: {
+    formatTime(time) {
+      if (!time) return 0;
+      return Math.floor(time / 60);
+    },
     async getUserInfo() {
       const params = {
-        openid: "HeiSeYouMo"
+        openid: "110"
       };
-      const res = await getUserInfo(params);
-      console.log(res);
+      const { status, data } = await GetUserInfoCenter(params);
+      if (status !== 200) return;
+      console.log(data.data);
+      this.userInfo = data.data;
     }
   }
 };

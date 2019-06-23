@@ -10,7 +10,7 @@
         />
         <div class="content">
           <div class="qwui-lean_task">
-            <div class="course_list_wrap">
+            <div class="course_list_wrap" v-if="mandatoryArr.length">
               <div class="course_list_head qwui-flexbox">
                 <span class="qwui-flexItem">必学课</span>
                 <span class="arrow_icon" @click="goDetail(1)">
@@ -44,8 +44,8 @@
                     <span>
                       <van-circle
                         v-model="currentRate"
-                        :rate="item.xxjd"
-                        :speed="1"
+                        :rate="item.xxjd * 100"
+                        :speed="100"
                         size="14px"
                         layer-color="#ebedf0"
                       />
@@ -58,7 +58,7 @@
               </ul>
             </div>
             <!-- 选学 -->
-            <div class="course_list_wrap">
+            <div class="course_list_wrap" v-if="optionalArr.length">
               <div class="course_list_head qwui-flexbox">
                 <span class="qwui-flexItem">选学课</span>
                 <span class="arrow_icon" @click="goDetail(2)">
@@ -92,9 +92,9 @@
                   <div class="item_state">
                     <span>
                       <van-circle
-                        v-model="currentRate"
-                        :rate="item.xxjd"
-                        :speed="1"
+                        v-model="currentRate1"
+                        :rate="item.xxjd * 100"
+                        :speed="100"
                         size="14px"
                         layer-color="#ebedf0"
                       />
@@ -132,6 +132,7 @@ export default {
       mandatoryArr: [], //必休课
       activeNames: ["1"],
       currentRate: 0,
+      currentRate1: 0,
       PageSize: 10,
       currentIndex: 1,
       keyword: ""
@@ -278,10 +279,12 @@ export default {
           height: 100%;
           img {
             position: relative;
-            height: 187px;
-            width: auto;
+            // height: 187px;
+            // width: auto;
+            width: 100%;
+            height: 100%;
             max-width: none;
-            left: -16.5px;
+            // left: -16.5px;
             vertical-align: middle;
           }
         }
