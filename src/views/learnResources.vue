@@ -10,6 +10,11 @@
     <!-- 图文课件02 -->
     <div v-if="params.kjlx == '02'" v-html="imgContent"></div>
     <!-- docx03 -->
+    <object width="800" height="600" border="0" v-if="params.kjlx == '03'"
+      ><param name="src" :value="`http://dzjc.ruantechnology.com${pdfUrl}`" />
+    </object>
+
+    <!-- <embed :src="`http://dzjc.ruantechnology.com${pdfUrl}`" width="800" height="600" ></embed> -->
     <!-- <pdf src="./static/relativity.pdf"></pdf> -->
     <!-- 04课件链接 -->
     <iframe v-if="params.kjlx == '04'" :src="iframUrl" class="iframe"></iframe>
@@ -23,6 +28,7 @@ export default {
   data() {
     return {
       id: "",
+      pdfUrl: "", //pdf03
       imgContent: "", //图文课件02
       iframUrl: "", //课件链接04
       picUrl: "", //图片
@@ -78,6 +84,10 @@ export default {
       // 02图文课件
       if (data.data.kjlx == "02") {
         this.imgContent = data.data.kjnr;
+      }
+      // 03pdf
+      if (data.data.kjlx == "03") {
+        this.pdfUrl = data.data.kjnr;
       }
     }
   }

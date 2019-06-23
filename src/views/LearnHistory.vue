@@ -27,12 +27,12 @@
             <div class="rate">
               <van-circle
                 font-size="12px;"
-                v-model="currentRate"
-                :rate="30"
+                v-model="item.currentRate"
+                :rate="item.xxjd * 100"
                 :speed="100"
                 size="45px"
                 layer-color="#ebedf0"
-                :text="text"
+                :text="formatDesc(item)"
               />
             </div>
             <div class="desc">已学习</div>
@@ -67,8 +67,8 @@
               <div class="rate">
                 <van-circle
                   font-size="12px;"
-                  v-model="currentRate"
-                  :rate="30"
+                  v-model="item.currentRate"
+                  :rate="item.xxjd * 100"
                   :speed="100"
                   size="45px"
                   layer-color="#ebedf0"
@@ -114,9 +114,6 @@ export default {
   computed: {
     address: function() {
       return this.tab === 0 ? "lf" : "rg";
-    },
-    text() {
-      return this.currentRate.toFixed(0) + "%";
     }
   },
   mounted() {
@@ -127,6 +124,9 @@ export default {
     "van-icon": Icon
   },
   methods: {
+    formatDesc(item) {
+      return `${parseInt(item.xxjd * 100)}%`;
+    },
     changeTab(value) {
       this.tab = value;
       this.GetUserRecentCourses(value);
@@ -138,7 +138,19 @@ export default {
       };
       const { status, data } = await GetUserRecentCourses(params);
       if (status !== 200) return;
-      this.dataArr = data.data;
+      if (data.data.length === 0) {
+        this.dataArr = [];
+      } else {
+        this.formatArr(data.data);
+      }
+    },
+    formatArr(arr) {
+      if (!arr.length) return;
+      // const midArr = [];
+      arr.map(item => {
+        item.currentRate = 0;
+      });
+      this.dataArr = arr;
     }
   }
 };

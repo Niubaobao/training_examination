@@ -89,7 +89,7 @@
                 </div>
                 <div class="course_state">
                   <van-circle
-                    v-model="currentRate"
+                    v-model="itm.currentRate"
                     size="20px"
                     layer-color="#ebedf0"
                     :rate="formatValue(itm)"
@@ -143,7 +143,7 @@ export default {
   },
   methods: {
     formatValue(item) {
-      return (item.yxsc / item.xxsc) * 100;
+      return parseInt(item.xxjd * 100);
     },
     initImage() {
       ImagePreview({
@@ -210,12 +210,21 @@ export default {
       const { status, data } = await getCourseInfo(params);
       if (status !== 200) return;
       this.data = data.data;
-      this.catalogue = data.data.kcnr;
+      this.formatArr(data.data.kcnr);
+      // this.catalogue = data.data.kcnr;
       this.headerBg = data.data.kcfm;
       this.findCurrentTitle(data.data.kcnr);
       if (!this.currentTitle) {
         this.currentData = data.data.kcnr[0].zjnr[0];
       }
+    },
+    formatArr(arr) {
+      for (let i = 0; i < arr.length; i++) {
+        for (let j = 0; j < arr[i].zjnr.length; j++) {
+          arr[i].zjnr[j].currentRate = 0;
+        }
+      }
+      this.catalogue = arr;
     },
     findCurrentTitle(arr) {
       if (!arr.length) return;
