@@ -188,10 +188,12 @@ export default {
           height: 100%;
           img {
             position: relative;
-            height: 187px;
-            width: auto;
+            width: 100%;
+            height: 100%;
+            // height: 187px;
+            // width: auto;
             max-width: none;
-            left: -16.5px;
+            // left: -16.5px;
             vertical-align: middle;
           }
         }
