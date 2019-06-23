@@ -143,7 +143,7 @@ export default {
   },
   methods: {
     formatValue(item) {
-      return parseInt(item.xxjd * 100);
+      return parseInt((item.yxsc / item.xxsc) * 100);
     },
     initImage() {
       ImagePreview({
