@@ -94,6 +94,10 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+img {
+  width: 100%;
+  height: auto;
+}
 .iframe {
   width: 100%;
   min-height: 100vh;
