@@ -5,6 +5,7 @@ deploy:
   stage: deploy
   script:
     - npm run build
+    - cp -r dist/* /usr/share/nginx/html
   only:
     - master
     - tags
