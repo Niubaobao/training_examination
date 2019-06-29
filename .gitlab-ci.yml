@@ -4,8 +4,11 @@ stages:
 deploy:
   stage: deploy
   script:
+    - echo "构建开始..."
     - npm run build
+    - echo "构建结束..."
     - cp -r dist/* /usr/share/nginx/html
+    - echo "发布完成~"
   only:
     - master
     - tags
