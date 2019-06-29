@@ -1,0 +1,12 @@
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  script:
+    - npm run build
+  only:
+    - master
+    - tags
+  tags:
+    - shell
