@@ -4,7 +4,7 @@ stages:
 deploy:
   stage: deploy
   before_script:
-    - source /root/.bashrc
+    - sudo source /root/.bashrc
   script:
     - echo "构建开始..."
     - npm run build
