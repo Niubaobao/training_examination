@@ -13,9 +13,7 @@ build site:
   script:
     - npm install --progress=false
     - npm run build
-    - mkdir .public
-    - cp -r * .public
-    - mv .public public
+    - scp -P22 -r dist/* root@111.230.224.164:root/test
   artifacts:
     paths:
       - public
