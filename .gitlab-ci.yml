@@ -13,7 +13,11 @@ build site:
   script:
     - npm install --progress=false
     - npm run build
-    - scp -P22 -r dist/* root@111.230.224.164:root/test
+    - ssh-add <(echo "$STAGING_PRIVATE_KEY")
+    - ssh -p22 root@111.230.224.164 "mkdir htdocs/wp-content/themes/_tmp"
+    - scp -P22 -r dist/* root@111.230.224.164:htdocs/wp-content/themes/_tmp
+    - ssh -p22 root@111.230.224.164 "mv htdocs/wp-content/themes/live htdocs/wp-content/themes/_old && mv htdocs/wp-content/themes/_tmp htdocs/wp-content/themes/live"
+    - ssh -p22 root@111.230.224.164 "rm -rf htdocs/wp-content/themes/_old"
   artifacts:
     paths:
       - public
