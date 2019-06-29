@@ -1,20 +1,15 @@
-image: node:latest
+image: node:10.6.0
 
 stages:
   - build
+  - test
+
+cache:
+  paths:
+    - node_modules/
 
 build site:
   stage: build
-  before_script:
-    - apt-get update
-    - apt-get install zip unzip nodejs npm -y
-    - npm install --progress=false
-  cache:
-    paths:
-      - node_modules/
   script:
+    - npm install --progress=false
     - npm run build
-  artifacts:
-    expire_in: 1 week
-    paths:
-      - dist/
