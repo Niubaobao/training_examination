@@ -1,4 +1,5 @@
 image: node:10.6.0
+
 stages:
   - build
   - test
