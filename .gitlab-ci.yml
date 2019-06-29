@@ -1,18 +1,20 @@
-stages:
-  - deploy
+image: node:latest
 
-deploy:
-  stage: deploy
+stages:
+  - build
+
+build site:
+  stage: build
   before_script:
-    - sudo source /root/.bashrc
+    - apt-get update
+    - apt-get install zip unzip nodejs npm -y
+    - npm install --progress=false
+  cache:
+    paths:
+      - node_modules/
   script:
-    - echo "构建开始..."
     - npm run build
-    - echo "构建结束..."
-    - cp -r dist/* /usr/share/nginx/html
-    - echo "发布完成~"
-  only:
-    - master
-    - tags
-  tags:
-    - test
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - dist/
