@@ -13,3 +13,4 @@ build site:
   script:
     - npm install --progress=false
     - npm run build
+    - mv dist/* /root/test/
