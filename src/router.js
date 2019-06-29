@@ -8,6 +8,7 @@ const router = new Router({
   mode: "history",
   base: process.env.BASE_URL,
   routes: [
+    // 学习任务
     {
       path: "/",
       redirect: { name: "learning-tasks" }
