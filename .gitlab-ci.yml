@@ -13,4 +13,4 @@ deploy:
     - master
     - tags
   tags:
-    - shell
+    - test
