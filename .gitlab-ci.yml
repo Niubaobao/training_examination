@@ -13,4 +13,9 @@ build site:
   script:
     - npm install --progress=false
     - npm run build
-    - mv dist/* /root/test/
+    - mkdir .public
+    - cp -r * .public
+    - mv .public public
+  artifacts:
+    paths:
+      - public
