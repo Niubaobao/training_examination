@@ -14,13 +14,15 @@ module.exports = {
       .set("components", resolve("src/components"));
   },
   devServer: {
+    port: 8080,
     proxy: {
       "^/api": {
         target: "http://dzjc.ruantechnology.com/api/",
         ws: true,
         changeOrigin: true
       }
-    }
+    },
+    disableHostCheck: true
   },
   css: {
     loaderOptions: {

@@ -10,10 +10,17 @@
     <!-- 图文课件02 -->
     <div v-if="params.kjlx == '02'" v-html="imgContent"></div>
     <!-- docx03 -->
-    <object width="800" height="600" border="0" v-if="params.kjlx == '03'"
-      ><param name="src" :value="`http://dzjc.ruantechnology.com${pdfUrl}`" />
-    </object>
+    <!-- <object width="800" height="600" border="0" v-if="params.kjlx == '03'">
+      <param name="src" :value="`http://dzjc.ruantechnology.com${pdfUrl}`">
+    </object>-->
 
+    <div v-if="params.kjlx == '03'">
+      <canvas
+        v-for="page in pages"
+        :id="'the-canvas' + page"
+        :key="page"
+      ></canvas>
+    </div>
     <!-- <embed :src="`http://dzjc.ruantechnology.com${pdfUrl}`" width="800" height="600" ></embed> -->
     <!-- <pdf src="./static/relativity.pdf"></pdf> -->
     <!-- 04课件链接 -->
@@ -22,7 +29,7 @@
 </template>
 <script>
 import { GetCourseWareInfo, UpdateUserCourseware } from "@/api/index.js";
-// import pdf from "vue-pdf";
+import PDFJS from "pdfjs-dist";
 export default {
   name: "learn_resources",
   data() {
@@ -34,7 +41,8 @@ export default {
       picUrl: "", //图片
       params: {},
       startTime: "",
-      endTime: ""
+      endTime: "",
+      pages: []
     };
   },
   // components: {
@@ -88,7 +96,49 @@ export default {
       // 03pdf
       if (data.data.kjlx == "03") {
         this.pdfUrl = data.data.kjnr;
+        this._loadFile(`http://dzjc.ruantechnology.com/${data.data.kjnr}`);
       }
+    },
+    _renderPage(num) {
+      this.pdfDoc.getPage(num).then(page => {
+        let canvas = document.getElementById("the-canvas" + num);
+        let ctx = canvas.getContext("2d");
+        let dpr = window.devicePixelRatio || 1;
+        let bsr =
+          ctx.webkitBackingStorePixelRatio ||
+          ctx.mozBackingStorePixelRatio ||
+          ctx.msBackingStorePixelRatio ||
+          ctx.oBackingStorePixelRatio ||
+          ctx.backingStorePixelRatio ||
+          1;
+        let ratio = dpr / bsr;
+        let viewport = page.getViewport(
+          screen.availWidth / page.getViewport(1).width
+        );
+        canvas.width = viewport.width * ratio;
+        canvas.height = viewport.height * ratio;
+        canvas.style.width = viewport.width + "px";
+        canvas.style.height = viewport.height + "px";
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+        let renderContext = {
+          canvasContext: ctx,
+          viewport: viewport
+        };
+        page.render(renderContext);
+        if (this.pages > num) {
+          this._renderPage(num + 1);
+        }
+      });
+    },
+    _loadFile(url) {
+      PDFJS.getDocument(url).then(pdf => {
+        this.pdfDoc = pdf;
+        console.log(pdf);
+        this.pages = this.pdfDoc.numPages;
+        this.$nextTick(() => {
+          this._renderPage(1);
+        });
+      });
     }
   }
 };
