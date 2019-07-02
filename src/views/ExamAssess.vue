@@ -7,14 +7,20 @@
         finished-text="没有更多了"
       >
         <div class="item" v-for="item in list" :key="item.id">
-          <div class="time">{{ item.time }}</div>
-          <div class="title">
-            <span class="tag">{{ item.tag }}</span>
-            <div>{{ item.title }}</div>
+          <div class="time">
+            {{ formatTimeTitle(item.kssj) }} {{ getWeekByDate(item.kssj) }}
           </div>
-          <div class="end_time">截止时间：{{ item.end_time }}</div>
-          <div class="time_long">考试时间：{{ item.time_long }}</div>
-          <div class="desc">{{ item.desc }}</div>
+          <div class="title">
+            <span class="tag">{{ item.kszt }}</span>
+            <div>{{ item.ksmc }}</div>
+          </div>
+          <div class="end_time">
+            截止时间：
+            <img style="width: 18px" :src="clockImgUrl" />
+            {{ getEndTime(item.jzsj) }}
+          </div>
+          <div class="time_long">考试时长：{{ item.ksxs }}分钟</div>
+          <div class="desc">{{ item.kssm }}</div>
           <div class="btn-wrap">
             <van-button class="btn" size="small" plain hairline type="danger"
               >继续考试 29:30</van-button
@@ -30,11 +36,18 @@
 import { createNamespacedHelpers } from "vuex";
 import PageWithTab from "@/components/PageWithTab.vue";
 import { List, Button } from "vant";
+import moment from "moment";
+import clockImgUrl from "../assets/images/clock.png";
 
 const { mapActions, mapState } = createNamespacedHelpers("examAssess");
 
 export default {
   name: "exam-assess",
+  data() {
+    return {
+      clockImgUrl
+    };
+  },
   components: {
     PageWithTab,
     "van-list": List,
@@ -48,6 +61,17 @@ export default {
   },
   methods: {
     onLoad() {},
+    formatTimeTitle(date) {
+      return moment(date).format("MM月DD日");
+    },
+    getWeekByDate(date) {
+      const weeks = ["日", "一", "二", "三", "四", "五", "六"];
+      const index = new Date(date).getDay();
+      return `星期${weeks[index]}`;
+    },
+    getEndTime(date) {
+      return moment(date).format("hh:mm");
+    },
     ...mapActions(["getList"])
   }
 };
@@ -80,8 +104,11 @@ export default {
   }
   .end_time,
   .time_long {
-    font-size: 12px;
+    font-size: 14px;
     color: #777;
+    display: flex;
+    align-items: center;
+    padding: 2px 0;
   }
   .desc {
     margin-top: 7px;
@@ -95,7 +122,7 @@ export default {
   }
   .btn-wrap {
     text-align: right;
-    margin-top: 10px;
+    margin-top: 7px;
     .btn {
       width: 100px;
     }
