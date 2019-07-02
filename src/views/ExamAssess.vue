@@ -4,6 +4,7 @@
       <van-list
         :value.sync="loading"
         :finished="finished"
+        @load="onLoad"
         finished-text="没有更多了"
       >
         <div class="item" v-for="item in list" :key="item.id">
@@ -45,7 +46,8 @@ export default {
   name: "exam-assess",
   data() {
     return {
-      clockImgUrl
+      clockImgUrl,
+      pageIndex: 1
     };
   },
   components: {
@@ -54,13 +56,21 @@ export default {
     "van-button": Button
   },
   created() {
-    this.getList();
+    this.getList({
+      pageIndex: 1,
+      pageSize: 10
+    });
   },
   computed: {
     ...mapState(["list", "loading", "finished"])
   },
   methods: {
-    onLoad() {},
+    onLoad() {
+      this.getList({
+        pageIndex: ++this.pageIndex,
+        pageSize: 10
+      });
+    },
     formatTimeTitle(date) {
       return moment(date).format("MM月DD日");
     },

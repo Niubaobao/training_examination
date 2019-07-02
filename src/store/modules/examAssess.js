@@ -12,15 +12,16 @@ const getters = {};
 
 // actions
 const actions = {
-  async getList({ commit }) {
+  async getList({ commit }, params) {
     commit("setLoading", true);
     const { data = {} } =
       (await getExamList({
         userid: 110,
-        pageIndex: 1,
-        pageSize: 10
+        ...params
       })) || {};
-    commit("setList", data.data);
+    const list = data.data || [];
+    commit("setFinished", list.length < 10);
+    commit("setList", list);
     commit("setLoading", false);
   }
 };
@@ -34,7 +35,7 @@ const mutations = {
     state.loading = bool;
   },
   setFinished(state, bool) {
-    state.loading = bool;
+    state.finished = bool;
   }
 };
 
