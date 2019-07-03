@@ -23,7 +23,13 @@
           <div class="time_long">考试时长：{{ item.ksxs }}分钟</div>
           <div class="desc">{{ item.kssm }}</div>
           <div class="btn-wrap">
-            <van-button class="btn" size="small" plain hairline type="danger"
+            <van-button
+              class="btn"
+              size="small"
+              plain
+              hairline
+              type="danger"
+              @click="gotoExamDetail"
               >继续考试 29:30</van-button
             >
           </div>
@@ -82,12 +88,18 @@ export default {
     getEndTime(date) {
       return moment(date).format("hh:mm");
     },
+    gotoExamDetail() {
+      this.$router.push({
+        path: "/exam-assess-detail",
+        query: { id: 1234 }
+      });
+    },
     ...mapActions(["getList"])
   }
 };
 </script>
 <style lang="less" scoped>
-.item {
+.exam-assess .item {
   display: flex;
   flex-direction: column;
   padding: 15px;

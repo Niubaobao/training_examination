@@ -1,28 +1,12 @@
-image: node:10.6.0
-
-stages:
-  - build
-  - test
-
-cache:
-  paths:
-    - node_modules/
-
-build site:
-  stage: build
-  before_script:
-    - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
-    - mkdir -p ~/.ssh
-    - eval $(ssh-agent -s)
-    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+pages: # 必须定义一个名为 pages 的 job
+  image: node:latest
+  stage: deploy
   script:
-    - npm install --progress=false
+    - npm ci
     - npm run build
-    - ssh-add <(echo "$STAGING_PRIVATE_KEY")
-    - ssh -p22 root@111.230.224.164 "mkdir htdocs/wp-content/themes/_tmp"
-    - scp -P22 -r dist/* root@111.230.224.164:htdocs/wp-content/themes/_tmp
-    - ssh -p22 root@111.230.224.164 "mv htdocs/wp-content/themes/live htdocs/wp-content/themes/_old && mv htdocs/wp-content/themes/_tmp htdocs/wp-content/themes/live"
-    - ssh -p22 root@111.230.224.164 "rm -rf htdocs/wp-content/themes/_old"
+    - mv dist /usr/share/nginx/html # 重命名 dist 文件夹 (npm run build 之后的输出位置)
   artifacts:
     paths:
-      - public
+      - public # artifact path 一定要在 /public , 这样 GitLab Pages 才能获取
+  only:
+    - master
