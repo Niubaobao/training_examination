@@ -78,7 +78,6 @@ export default {
     "van-button": Button
   },
   created() {
-    console.info(this.$route.query.id, "this.$route.query.id");
     this.getDetail({
       ksid: this.$route.query.id
     });
