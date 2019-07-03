@@ -10,3 +10,5 @@ pages: # 必须定义一个名为 pages 的 job
       - public # artifact path 一定要在 /public , 这样 GitLab Pages 才能获取
   only:
     - master
+  tags:
+    - training_examination
