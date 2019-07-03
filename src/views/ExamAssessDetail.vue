@@ -1,47 +1,47 @@
 <template>
   <div class="exam-assess-detail">
-    <h2>常识考试（试用）</h2>
+    <h2>{{ detail.ksmc }}</h2>
     <van-row class="items">
       <van-col class="item" span="12">
         <img class="item-icon" :src="totalScoreImgUrl" alt="" />
         <div class="item-content">
-          <span class="item-content-num">100</span>
-          <span class="item-content-title">总分数</span>
+          <span class="item-content-num">{{ detail.kszf }}</span>
+          <span class="item-content-title">考试总分</span>
         </div>
       </van-col>
       <van-col class="item" span="12">
         <img class="item-icon" :src="passLineImgUrl" alt="" />
         <div class="item-content">
-          <span class="item-content-num">100</span>
-          <span class="item-content-title">总分数</span>
+          <span class="item-content-num">{{ detail.tgfs }}</span>
+          <span class="item-content-title">及格分</span>
         </div>
       </van-col>
       <van-col class="item" span="12">
         <img class="item-icon" :src="examCountImgUrl" alt="" />
         <div class="item-content">
-          <span class="item-content-num">100</span>
-          <span class="item-content-title">总分数</span>
+          <span class="item-content-num">{{ detail.stsl }}</span>
+          <span class="item-content-title">总题数</span>
         </div>
       </van-col>
       <van-col class="item" span="12">
         <img class="item-icon" :src="examTimeLongImgUrl" alt="" />
         <div class="item-content">
-          <span class="item-content-num">100</span>
-          <span class="item-content-title">总分数</span>
+          <span class="item-content-num">{{ detail.ksxs }}</span>
+          <span class="item-content-title">考试时长</span>
         </div>
       </van-col>
     </van-row>
     <div class="exam-date">
       考试时间
-      <span>05~29 14：26 至 --</span>
+      <span
+        >{{ formatDate(detail.kssj) }} 至 {{ formatDate(detail.jzsj) }}</span
+      >
     </div>
     <div class="exam-times">
       可考次数
-      <span>无限制</span>
+      <span>{{ detail.kscs }}</span>
     </div>
-    <p class="desc">
-      为期考试测评应用提供完善的考试评测四通，致辞自建题库，系统只能出卷，定向组织考试，题目乱序，外部考试，自动改卷。
-    </p>
+    <p class="desc">{{ detail.kssm }}</p>
     <div class="btns">
       <van-button class="left" size="large" plain hairline type="info"
         >查看结果</van-button
@@ -54,12 +54,13 @@
 // @ is an alias to /src
 import { createNamespacedHelpers } from "vuex";
 import { Row, Col, Button } from "vant";
+import moment from "moment";
 import totalScoreImgUrl from "../assets/images/exam-assess-detail-zongfenshu.png";
 import passLineImgUrl from "../assets/images/exam-assess-detail-jigexian.png";
 import examCountImgUrl from "../assets/images/exam-assess-detail-tishu.png";
 import examTimeLongImgUrl from "../assets/images/exam-assess-detail-shichang.png";
 
-const { mapActions, mapState } = createNamespacedHelpers("examAssess");
+const { mapActions, mapState } = createNamespacedHelpers("examAssessDetail");
 
 export default {
   name: "exam-assess-detail",
@@ -77,14 +78,18 @@ export default {
     "van-button": Button
   },
   created() {
-    this.getList();
+    this.getDetail({
+      ksid: this.$route.query.id
+    });
   },
   computed: {
-    ...mapState(["list", "loading", "finished"])
+    ...mapState(["detail", "loading"])
   },
   methods: {
-    onLoad() {},
-    ...mapActions(["getList"])
+    formatDate(date) {
+      return moment(date).format("MM-DD HH:mm");
+    },
+    ...mapActions(["getDetail"])
   }
 };
 </script>

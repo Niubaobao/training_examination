@@ -7,7 +7,12 @@
         @load="onLoad"
         finished-text="没有更多了"
       >
-        <div class="item" v-for="item in list" :key="item.id">
+        <div
+          class="item"
+          v-for="item in list"
+          :key="item.id"
+          @click="gotoExamDetail(item.ksid)"
+        >
           <div class="time">
             {{ formatTimeTitle(item.kssj) }} {{ getWeekByDate(item.kssj) }}
           </div>
@@ -29,8 +34,8 @@
               plain
               hairline
               type="danger"
-              @click="gotoExamDetail"
-              >继续考试 29:30</van-button
+              @click.stop="gotoContinueExam(item.ksid)"
+              >继续考试</van-button
             >
           </div>
         </div>
@@ -53,19 +58,13 @@ export default {
   data() {
     return {
       clockImgUrl,
-      pageIndex: 1
+      pageIndex: 0
     };
   },
   components: {
     PageWithTab,
     "van-list": List,
     "van-button": Button
-  },
-  created() {
-    this.getList({
-      pageIndex: 1,
-      pageSize: 10
-    });
   },
   computed: {
     ...mapState(["list", "loading", "finished"])
@@ -88,10 +87,16 @@ export default {
     getEndTime(date) {
       return moment(date).format("hh:mm");
     },
-    gotoExamDetail() {
+    gotoExamDetail(id) {
       this.$router.push({
         path: "/exam-assess-detail",
-        query: { id: 1234 }
+        query: { id }
+      });
+    },
+    gotoContinueExam(id) {
+      this.$router.push({
+        path: "/exam-assessing",
+        query: { id }
       });
     },
     ...mapActions(["getList"])

@@ -19,9 +19,10 @@ const actions = {
         userid: 110,
         ...params
       })) || {};
-    const list = data.data || [];
-    commit("setFinished", list.length < 10);
-    commit("setList", list);
+    const { PageIndex, Items, TotalPages } = data.data || {};
+    console.info(Items, "list");
+    commit("setFinished", PageIndex >= TotalPages);
+    commit("setList", Items);
     commit("setLoading", false);
   }
 };

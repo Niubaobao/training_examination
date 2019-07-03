@@ -13,6 +13,10 @@ export const getExamList = params =>
   instance.get("electronictraining/Examination/GetExaminations", {
     params
   });
+export const getExamDetail = params =>
+  instance.get("electronictraining/Examination/GetExaminationInfo", {
+    params
+  });
 //获取课程列表
 export const getCourses = params =>
   instance.get("electronictraining/Course/GetCourses", { params });
