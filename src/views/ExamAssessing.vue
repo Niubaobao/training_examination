@@ -64,14 +64,38 @@
     </div>
     <div class="exam-assessing-btns">
       <van-button :disabled="curIndex === 0" @click="last">上一题</van-button>
-      <van-button>答题卡</van-button>
-      <van-button
-        :disabled="curIndex === subjects.length - 1"
-        type="info"
-        @click="next"
-        >下一题</van-button
-      >
+      <van-button @click="showCard">答题卡</van-button>
+      <van-button type="info" @click="next">
+        {{ curIndex === subjects.length - 1 ? "交卷" : "下一题" }}
+      </van-button>
     </div>
+    <van-popup
+      :style="{ height: '75%' }"
+      position="bottom"
+      v-model="showCardVisible"
+    >
+      <p class="exam-assessing-question-card-h4">答题卡</p>
+      <div class="exam-assessing-question-card-tip">
+        <div>
+          <div class="exam-assessing-question-card-circle active"></div>
+          已答
+        </div>
+        <div>
+          <div class="exam-assessing-question-card-circle"></div>
+          未答
+        </div>
+      </div>
+      <div class="exam-assessing-question-card-result">
+        <div class="exam-assessing-question-card-item done">1</div>
+        <div class="exam-assessing-question-card-item done">2</div>
+        <div class="exam-assessing-question-card-item">3</div>
+        <div class="exam-assessing-question-card-item">4</div>
+      </div>
+      <div class="exam-assessing-question-card-btns">
+        <div class="border">继续答题</div>
+        <div>交卷</div>
+      </div>
+    </van-popup>
   </div>
 </template>
 <script>
@@ -84,7 +108,9 @@ import {
   Radio,
   CheckboxGroup,
   Checkbox,
-  Progress
+  Progress,
+  Dialog,
+  Popup
 } from "vant";
 
 const { mapActions, mapState } = createNamespacedHelpers("examAssessing");
@@ -95,43 +121,8 @@ export default {
     return {
       radio: "A",
       checkbox: [],
-      curIndex: 0
-      // subjects: [
-      //   {
-      //     type: "radio",
-      //     title: "昨天是几号？",
-      //     score: 5,
-      //     options: [
-      //       { title: "昨天是几点", option: "A" },
-      //       { title: "今天是几点", option: "B" },
-      //       { title: "明天是几点", option: "C" },
-      //       { title: "到底是几点", option: "D" }
-      //     ]
-      //   },
-      //   {
-      //     type: "muti",
-      //     title: "一下哪几种是水果？",
-      //     score: 5,
-      //     options: [
-      //       { title: "香蕉", option: "A" },
-      //       { title: "苹果", option: "B" },
-      //       { title: "黄瓜", option: "C" },
-      //       { title: "西红柿", option: "D" }
-      //     ]
-      //   },
-      //   {
-      //     type: "input",
-      //     title: "公司_点上班，__点下班？",
-      //     score: 25,
-      //     options: [{ title: "填空项1" }, { title: "填空项2" }]
-      //   },
-      //   {
-      //     type: "textarea",
-      //     title: "昨天航班怎么样？",
-      //     score: 30,
-      //     options: []
-      //   }
-      // ]
+      curIndex: 0,
+      showCardVisible: false
     };
   },
   components: {
@@ -141,7 +132,8 @@ export default {
     "van-radio": Radio,
     "van-checkbox-group": CheckboxGroup,
     "van-checkbox": Checkbox,
-    "van-progress": Progress
+    "van-progress": Progress,
+    "van-popup": Popup
   },
   created() {
     this.getDetail({
@@ -150,7 +142,7 @@ export default {
   },
   computed: {
     subject() {
-      return this.subjects[this.curIndex];
+      return this.subjects[this.curIndex] || {};
     },
     title() {
       const subjectTypeMap = {
@@ -162,19 +154,36 @@ export default {
       return subjectTypeMap[this.subject.type];
     },
     percentage() {
-      return ((this.curIndex + 1) / this.subjects.length) * 100;
+      return ((this.curIndex + 1) / (this.subjects.length || 1)) * 100;
     },
     subjects() {
-      return this.detail.questions;
+      return this.detail.questions || [];
     },
     ...mapState(["detail", "loading"])
   },
   methods: {
     next() {
-      this.curIndex++;
+      if (this.curIndex === this.subjects.length - 1) {
+        Dialog.confirm({
+          title: "交卷提示",
+          message: "试卷提交后不可更改，确认要提交吗？",
+          beforeClose: (action, done) => {
+            if (action === "confirm") {
+              setTimeout(done, 1000);
+            } else {
+              done();
+            }
+          }
+        });
+      } else {
+        this.curIndex++;
+      }
     },
     last() {
       this.curIndex--;
+    },
+    showCard() {
+      this.showCardVisible = true;
     },
     onLoad() {},
     ...mapActions(["getDetail"])
@@ -254,5 +263,65 @@ export default {
 .exam-assessing-input-textarea textarea {
   border: 1px solid #ccc;
   width: 100%;
+}
+.exam-assessing-question-card-h4 {
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  margin: 0;
+  padding: 10px 0;
+}
+.exam-assessing-question-card-tip {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+}
+.exam-assessing-question-card-tip > div {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+}
+.exam-assessing-question-card-circle {
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  margin-right: 5px;
+  background: #999;
+}
+.exam-assessing-question-card-circle.active {
+  background: #1989fa;
+}
+.exam-assessing-question-card-result {
+  overflow: auto;
+}
+.exam-assessing-question-card-item {
+  float: left;
+  width: 30px;
+  line-height: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #999;
+  text-align: center;
+  margin-left: 20px;
+}
+.exam-assessing-question-card-item.done {
+  background: #1989fa;
+}
+.exam-assessing-question-card-btns {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+.exam-assessing-question-card-btns > div {
+  width: 50%;
+  float: left;
+  line-height: 50px;
+  text-align: center;
+  border-top: 1px solid #eee;
+}
+.exam-assessing-question-card-btns > div.border {
+  box-sizing: border-box;
+  border-right: 1px solid #eee;
 }
 </style>
