@@ -1,4 +1,4 @@
-import { getExamDetail } from "../../api";
+import { getExamDetail, submitAnswer, updateExamStatus } from "../../api";
 
 // initial state
 const state = {
@@ -19,6 +19,22 @@ const actions = {
         ...params
       })) || {};
     commit("setDetail", data.data || {});
+    commit("setLoading", false);
+  },
+  async submitAnswer({ commit }, params) {
+    commit("setLoading", true);
+    await submitAnswer({
+      ...params,
+      userid: 110
+    });
+    commit("setLoading", false);
+  },
+  async updateExamStatus({ commit }, params) {
+    commit("setLoading", true);
+    await updateExamStatus({
+      ...params,
+      userid: 110
+    });
     commit("setLoading", false);
   }
 };
