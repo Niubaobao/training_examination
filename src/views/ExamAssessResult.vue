@@ -30,10 +30,10 @@
       <div class="exam-card-item">2</div>
     </div>
     <div class="btns">
-      <van-button class="left" size="large" plain hairline type="info"
-        >查看结果</van-button
+      <van-button class="left" size="large" type="info">查看结果</van-button>
+      <van-button class="right" size="large" plain hairline type="info"
+        >再次考试</van-button
       >
-      <van-button class="right" size="large" type="info">考试</van-button>
     </div>
   </div>
 </template>

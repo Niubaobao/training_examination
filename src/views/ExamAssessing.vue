@@ -9,14 +9,14 @@
     <div class="exam-assessing-content">
       <div class="exam-assessing-title">
         <van-tag style="margin-right: 10px" color="#f2826a" plain>
-          {{ subject.stlxms }}
+          {{ title }}
         </van-tag>
         {{ subject.stmc }}（{{ subject.stfs }}分）
       </div>
       <div class="exam-assessing-input">
         <van-radio-group
           v-if="subject.stlx === '01' || subject.stlx === '03'"
-          v-model="radio"
+          v-model="anser[curIndex]"
         >
           <van-radio
             class="exam-assessing-input-radio"
@@ -34,7 +34,10 @@
             </div>
           </van-radio>
         </van-radio-group>
-        <van-checkbox-group v-if="subject.stlx === '02'" v-model="checkbox">
+        <van-checkbox-group
+          v-if="subject.stlx === '02'"
+          v-model="anser[curIndex]"
+        >
           <van-checkbox
             class="exam-assessing-input-checkbox"
             v-for="item in subject.questionOptions"
@@ -52,13 +55,13 @@
           </van-checkbox>
         </van-checkbox-group>
         <div v-if="subject.stlx === '04'" class="exam-assessing-input-input">
-          <div v-for="item in subject.options" :key="item.title">
-            <div class="exam-assessing-input-input-title">{{ item.title }}</div>
-            <Input v-model="item.value" />
+          <div v-for="item in subject.questionOptions" :key="item.xxid">
+            <div class="exam-assessing-input-input-title">{{ item.xxms }}</div>
+            <Input v-model="anser[curIndex]" />
           </div>
         </div>
         <div v-if="subject.stlx === '05'" class="exam-assessing-input-textarea">
-          <textarea cols="30" rows="10" v-model="subject.value"></textarea>
+          <textarea cols="30" rows="10" v-model="anser[curIndex]"></textarea>
         </div>
       </div>
     </div>
@@ -92,8 +95,8 @@
         <div class="exam-assessing-question-card-item">4</div>
       </div>
       <div class="exam-assessing-question-card-btns">
-        <div class="border">继续答题</div>
-        <div>交卷</div>
+        <div class="border" @click="closeCard">继续答题</div>
+        <div @click="endExam">交卷</div>
       </div>
     </van-popup>
   </div>
@@ -119,8 +122,7 @@ export default {
   name: "exam-assessing",
   data() {
     return {
-      radio: "A",
-      checkbox: [],
+      anser: [],
       curIndex: 0,
       showCardVisible: false
     };
@@ -146,12 +148,13 @@ export default {
     },
     title() {
       const subjectTypeMap = {
-        radio: "单选题",
-        muti: "多选题",
-        input: "填空题",
-        textarea: "简单题"
+        "01": "单选题",
+        "02": "多选题",
+        "03": "判断题",
+        "04": "填空题",
+        "05": "简单题"
       };
-      return subjectTypeMap[this.subject.type];
+      return subjectTypeMap[this.subject.stlx];
     },
     percentage() {
       return ((this.curIndex + 1) / (this.subjects.length || 1)) * 100;
@@ -162,20 +165,31 @@ export default {
     ...mapState(["detail", "loading"])
   },
   methods: {
-    next() {
+    async next() {
+      console.info(this.anser, "this.anser");
       if (this.curIndex === this.subjects.length - 1) {
         Dialog.confirm({
           title: "交卷提示",
           message: "试卷提交后不可更改，确认要提交吗？",
-          beforeClose: (action, done) => {
+          beforeClose: async (action, done) => {
             if (action === "confirm") {
-              setTimeout(done, 1000);
+              await this.updateExamStatus({
+                ksid: this.detail.ksid,
+                kszt: "03"
+              });
+              // 跳转
             } else {
               done();
             }
           }
         });
       } else {
+        // 填空题单独处理
+        await this.submitAnswer({
+          ksid: this.detail.ksid,
+          stid: this.subject.stid,
+          stda: this.anser[this.curIndex]
+        });
         this.curIndex++;
       }
     },
@@ -185,8 +199,18 @@ export default {
     showCard() {
       this.showCardVisible = true;
     },
+    closeCard() {
+      this.showCardVisible = false;
+    },
+    endExam() {
+      this.submitAnswer({
+        ksid: this.detail.ksid,
+        stid: this.subject.stid,
+        stda: "xxx"
+      });
+    },
     onLoad() {},
-    ...mapActions(["getDetail"])
+    ...mapActions(["getDetail", "submitAnswer", "updateExamStatus"])
   }
 };
 </script>
