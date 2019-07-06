@@ -4,7 +4,8 @@ import { getExamDetail, submitAnswer, updateExamStatus } from "../../api";
 const state = {
   detail: {},
   index: 0,
-  loading: false
+  loading: false,
+  ansers: []
 };
 
 // getters
@@ -18,7 +19,22 @@ const actions = {
       (await getExamDetail({
         ...params
       })) || {};
-    commit("setDetail", data.data || {});
+    const detail = data.data || {};
+    const questions = detail.questions || [];
+    const ansers = [];
+    questions.forEach(item => {
+      if (item.stlx === "01" || item.stlx === "03") {
+        ansers.push("A");
+      } else if (item.stlx === "02") {
+        ansers.push(["A", "C"]);
+      } else if (item.stlx === "04") {
+        ansers.push(["dadeawdad", "adyeawhdyaehwuy"]);
+      } else {
+        ansers.push("填空题啊");
+      }
+    });
+    commit("setAnsers", ansers);
+    commit("setDetail", detail);
     commit("setLoading", false);
   },
   async submitAnswer({ commit }, params) {
@@ -46,6 +62,9 @@ const mutations = {
   },
   setLoading(state, bool) {
     state.loading = bool;
+  },
+  setAnsers(state, data) {
+    state.ansers = data;
   }
 };
 

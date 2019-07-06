@@ -8,20 +8,20 @@
     <van-progress :percentage="percentage" :show-pivot="false" />
     <div class="exam-assessing-content">
       <div class="exam-assessing-title">
-        <van-tag style="margin-right: 10px" color="#f2826a" plain>
-          {{ title }}
-        </van-tag>
+        <van-tag style="margin-right: 10px" color="#f2826a" plain>{{
+          title
+        }}</van-tag>
         {{ subject.stmc }}（{{ subject.stfs }}分）
       </div>
       <div class="exam-assessing-input">
         <van-radio-group
           v-if="subject.stlx === '01' || subject.stlx === '03'"
-          v-model="anser[curIndex]"
+          v-model="ansers[curIndex]"
         >
           <van-radio
             class="exam-assessing-input-radio"
             v-for="item in subject.questionOptions"
-            :name="item.xxid"
+            :name="item.xxdm"
             :key="item.xxid"
           >
             {{ item.xxms }}
@@ -36,12 +36,12 @@
         </van-radio-group>
         <van-checkbox-group
           v-if="subject.stlx === '02'"
-          v-model="anser[curIndex]"
+          v-model="ansers[curIndex]"
         >
           <van-checkbox
             class="exam-assessing-input-checkbox"
             v-for="item in subject.questionOptions"
-            :name="item.xxid"
+            :name="item.xxdm"
             :key="item.xxid"
           >
             {{ item.xxms }}
@@ -55,22 +55,22 @@
           </van-checkbox>
         </van-checkbox-group>
         <div v-if="subject.stlx === '04'" class="exam-assessing-input-input">
-          <div v-for="item in subject.questionOptions" :key="item.xxid">
+          <div v-for="(item, i) in subject.questionOptions" :key="item.xxid">
             <div class="exam-assessing-input-input-title">{{ item.xxms }}</div>
-            <Input v-model="anser[curIndex]" />
+            <input v-model="ansers[curIndex][i]" />
           </div>
         </div>
         <div v-if="subject.stlx === '05'" class="exam-assessing-input-textarea">
-          <textarea cols="30" rows="10" v-model="anser[curIndex]"></textarea>
+          <textarea cols="30" rows="10" v-model="ansers[curIndex]"></textarea>
         </div>
       </div>
     </div>
     <div class="exam-assessing-btns">
       <van-button :disabled="curIndex === 0" @click="last">上一题</van-button>
       <van-button @click="showCard">答题卡</van-button>
-      <van-button type="info" @click="next">
-        {{ curIndex === subjects.length - 1 ? "交卷" : "下一题" }}
-      </van-button>
+      <van-button type="info" @click="next">{{
+        curIndex === subjects.length - 1 ? "交卷" : "下一题"
+      }}</van-button>
     </div>
     <van-popup
       :style="{ height: '75%' }"
@@ -122,7 +122,6 @@ export default {
   name: "exam-assessing",
   data() {
     return {
-      anser: [],
       curIndex: 0,
       showCardVisible: false
     };
@@ -137,8 +136,8 @@ export default {
     "van-progress": Progress,
     "van-popup": Popup
   },
-  created() {
-    this.getDetail({
+  async created() {
+    await this.getDetail({
       ksid: this.$route.query.id
     });
   },
@@ -162,11 +161,10 @@ export default {
     subjects() {
       return this.detail.questions || [];
     },
-    ...mapState(["detail", "loading"])
+    ...mapState(["detail", "loading", "ansers"])
   },
   methods: {
     async next() {
-      console.info(this.anser, "this.anser");
       if (this.curIndex === this.subjects.length - 1) {
         Dialog.confirm({
           title: "交卷提示",
@@ -188,7 +186,7 @@ export default {
         await this.submitAnswer({
           ksid: this.detail.ksid,
           stid: this.subject.stid,
-          stda: this.anser[this.curIndex]
+          stda: this.ansers[this.curIndex]
         });
         this.curIndex++;
       }
