@@ -3,14 +3,14 @@
     <div class="exam-assessing-line">
       <span>{{ curIndex + 1 }}</span>
       /{{ subjects.length }}
-      <div class="exam-assessing-line-time">12:30:09</div>
+      <div class="exam-assessing-line-time">{{ countDownText }}</div>
     </div>
     <van-progress :percentage="percentage" :show-pivot="false" />
     <div class="exam-assessing-content">
       <div class="exam-assessing-title">
-        <van-tag style="margin-right: 10px" color="#f2826a" plain>{{
-          title
-        }}</van-tag>
+        <van-tag style="margin-right: 10px" color="#f2826a" plain>
+          {{ title }}
+        </van-tag>
         {{ subject.stmc }}（{{ subject.stfs }}分）
       </div>
       <div class="exam-assessing-input">
@@ -68,9 +68,9 @@
     <div class="exam-assessing-btns">
       <van-button :disabled="curIndex === 0" @click="last">上一题</van-button>
       <van-button @click="showCard">答题卡</van-button>
-      <van-button type="info" @click="next">{{
-        curIndex === subjects.length - 1 ? "交卷" : "下一题"
-      }}</van-button>
+      <van-button type="info" @click="next">
+        {{ curIndex === subjects.length - 1 ? "交卷" : "下一题" }}
+      </van-button>
     </div>
     <van-popup
       :style="{ height: '75%' }"
@@ -108,6 +108,7 @@
 <script>
 // @ is an alias to /src
 import { createNamespacedHelpers } from "vuex";
+import moment from "moment";
 import {
   Button,
   Tag,
@@ -127,7 +128,8 @@ export default {
   data() {
     return {
       curIndex: 0,
-      showCardVisible: false
+      showCardVisible: false,
+      countDownText: ""
     };
   },
   components: {
@@ -144,6 +146,11 @@ export default {
     await this.getDetail({
       ksid: this.$route.query.id
     });
+    this.countDownTimer = setInterval(this.creatCountDown, 1000);
+    this.curIndex = +this.$route.query.index;
+  },
+  destroyed() {
+    clearInterval(this.countDownTimer);
   },
   computed: {
     subject() {
@@ -167,6 +174,9 @@ export default {
     },
     ...mapState(["detail", "loading", "ansers"])
   },
+  watch: {
+    $route: "onRoute"
+  },
   methods: {
     async next() {
       if (this.curIndex === this.subjects.length - 1) {
@@ -187,16 +197,21 @@ export default {
         });
       } else {
         // 填空题单独处理
-        await this.submitAnswer({
-          ksid: this.detail.ksid,
-          stid: this.subject.stid,
-          stda: this.ansers[this.curIndex]
-        });
+        const stda = this.ansers[this.curIndex];
+        if (stda) {
+          await this.submitAnswer({
+            ksid: this.detail.ksid,
+            stid: this.subject.stid,
+            stda: Array.isArray(stda) ? stda.join(";") : stda
+          });
+        }
         this.curIndex++;
+        this.gotoPageByIndex(this.curIndex);
       }
     },
     last() {
       this.curIndex--;
+      this.gotoPageByIndex(this.curIndex);
     },
     showCard() {
       this.showCardVisible = true;
@@ -214,6 +229,40 @@ export default {
     goto(index) {
       this.showCardVisible = false;
       this.curIndex = index;
+      console.info(this.$route.query.id, "goto");
+      console.info(index, "index");
+      this.gotoPageByIndex(index);
+    },
+    onRoute() {
+      this.getDetail({
+        ksid: this.$route.query.id
+      });
+    },
+    gotoPageByIndex(index) {
+      this.$router.push({
+        path: "/exam-assessing",
+        query: {
+          id: this.$route.query.id,
+          index
+        }
+      });
+    },
+    creatCountDown() {
+      // this.detail.jzsj
+      const endTime = moment(1562427844008);
+      const startTime = moment();
+      const diff = endTime.diff(startTime);
+      const diffDuration = moment.duration(diff);
+      if (diff <= 0) {
+        this.countDownText = "00:00:00";
+      } else {
+        this.countDownText = `${parseInt(
+          diffDuration.asHours(),
+          10
+        )}:${parseInt(diffDuration.asMinutes()) % 60}:${parseInt(
+          diffDuration.asSeconds()
+        ) % 60}`;
+      }
     },
     ...mapActions(["getDetail", "submitAnswer", "updateExamStatus"])
   }

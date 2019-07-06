@@ -24,13 +24,11 @@ const actions = {
     const ansers = [];
     questions.forEach(item => {
       if (item.stlx === "01" || item.stlx === "03") {
-        ansers.push("");
-      } else if (item.stlx === "02") {
-        ansers.push(["A", "C"]);
-      } else if (item.stlx === "04") {
-        ansers.push(["dadeawdad", "adyeawhdyaehwuy"]);
+        ansers.push(item.stda);
+      } else if (item.stlx === "02" || item.stlx === "04") {
+        ansers.push(item.stda ? item.stda.split(";") : []);
       } else {
-        ansers.push("填空题啊");
+        ansers.push(item.stda);
       }
     });
     commit("setAnsers", ansers);
