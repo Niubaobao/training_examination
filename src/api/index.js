@@ -19,11 +19,11 @@ export const getExamDetail = params =>
   });
 export const submitAnswer = params =>
   instance.post("electronictraining/Examination/SubmitQuestionAnswer", {
-    params
+    ...params
   });
 export const updateExamStatus = params =>
   instance.post("electronictraining/Examination/UpdateExamination", {
-    params
+    ...params
   });
 //获取课程列表
 export const getCourses = params =>

@@ -3,7 +3,7 @@
     <div class="exam-assessing-line">
       <span>{{ curIndex + 1 }}</span>
       /{{ subjects.length }}
-      <div class="exam-assessing-line-time">12:30:09</div>
+      <div class="exam-assessing-line-time">{{ countDownText }}</div>
     </div>
     <van-progress :percentage="percentage" :show-pivot="false" />
     <div class="exam-assessing-content">
@@ -89,10 +89,14 @@
         </div>
       </div>
       <div class="exam-assessing-question-card-result">
-        <div class="exam-assessing-question-card-item done">1</div>
-        <div class="exam-assessing-question-card-item done">2</div>
-        <div class="exam-assessing-question-card-item">3</div>
-        <div class="exam-assessing-question-card-item">4</div>
+        <div
+          v-for="(item, index) in ansers"
+          :key="index"
+          :class="{ 'exam-assessing-question-card-item': true, done: !!item }"
+          @click="goto(index)"
+        >
+          {{ index + 1 }}
+        </div>
       </div>
       <div class="exam-assessing-question-card-btns">
         <div class="border" @click="closeCard">继续答题</div>
@@ -104,6 +108,7 @@
 <script>
 // @ is an alias to /src
 import { createNamespacedHelpers } from "vuex";
+import moment from "moment";
 import {
   Button,
   Tag,
@@ -123,7 +128,8 @@ export default {
   data() {
     return {
       curIndex: 0,
-      showCardVisible: false
+      showCardVisible: false,
+      countDownText: ""
     };
   },
   components: {
@@ -140,6 +146,11 @@ export default {
     await this.getDetail({
       ksid: this.$route.query.id
     });
+    this.countDownTimer = setInterval(this.creatCountDown, 1000);
+    this.curIndex = +this.$route.query.index;
+  },
+  destroyed() {
+    clearInterval(this.countDownTimer);
   },
   computed: {
     subject() {
@@ -163,19 +174,19 @@ export default {
     },
     ...mapState(["detail", "loading", "ansers"])
   },
+  watch: {
+    $route: "onRoute"
+  },
   methods: {
     async next() {
+      await this.submitAnswerAction();
       if (this.curIndex === this.subjects.length - 1) {
         Dialog.confirm({
           title: "交卷提示",
           message: "试卷提交后不可更改，确认要提交吗？",
           beforeClose: async (action, done) => {
             if (action === "confirm") {
-              await this.updateExamStatus({
-                ksid: this.detail.ksid,
-                kszt: "03"
-              });
-              // 跳转
+              this.endExamAndToResult();
             } else {
               done();
             }
@@ -183,16 +194,13 @@ export default {
         });
       } else {
         // 填空题单独处理
-        await this.submitAnswer({
-          ksid: this.detail.ksid,
-          stid: this.subject.stid,
-          stda: this.ansers[this.curIndex]
-        });
         this.curIndex++;
+        this.gotoPageByIndex(this.curIndex);
       }
     },
     last() {
       this.curIndex--;
+      this.gotoPageByIndex(this.curIndex);
     },
     showCard() {
       this.showCardVisible = true;
@@ -201,13 +209,70 @@ export default {
       this.showCardVisible = false;
     },
     endExam() {
-      this.submitAnswer({
-        ksid: this.detail.ksid,
-        stid: this.subject.stid,
-        stda: "xxx"
+      this.submitAnswerAction();
+    },
+    goto(index) {
+      this.showCardVisible = false;
+      this.curIndex = index;
+      this.gotoPageByIndex(index);
+    },
+    onRoute() {
+      this.getDetail({
+        ksid: this.$route.query.id
       });
     },
-    onLoad() {},
+    gotoPageByIndex(index) {
+      this.$router.push({
+        path: "/exam-assessing",
+        query: {
+          id: this.$route.query.id,
+          index
+        }
+      });
+    },
+    creatCountDown() {
+      // this.detail.jzsj
+      const endTime = moment(1562427844008);
+      const startTime = moment();
+      const diff = endTime.diff(startTime);
+      const diffDuration = moment.duration(diff);
+      if (diff <= 0) {
+        this.countDownText = "00:00:00";
+      } else {
+        this.countDownText = `${this.formatTime(
+          diffDuration.asHours()
+        )}:${this.formatTime(diffDuration.asMinutes()) % 60}:${this.formatTime(
+          diffDuration.asSeconds()
+        ) % 60}`;
+      }
+    },
+    formatTime(time) {
+      const a = parseInt(time, 10);
+      return Number(a).length === 1 ? `0${a}` : a;
+    },
+    async submitAnswerAction() {
+      const stda = this.ansers[this.curIndex];
+      if (stda) {
+        await this.submitAnswer({
+          ksid: this.detail.ksid,
+          stid: this.subject.stid,
+          stda: Array.isArray(stda) ? stda.join(";") : stda
+        });
+      }
+    },
+    async endExamAndToResult() {
+      await this.updateExamStatus({
+        ksid: this.detail.ksid,
+        kszt: "03"
+      });
+      // 跳转
+      this.$router.push({
+        path: "/exam-assess-result",
+        query: {
+          id: this.detail.ksid
+        }
+      });
+    },
     ...mapActions(["getDetail", "submitAnswer", "updateExamStatus"])
   }
 };
