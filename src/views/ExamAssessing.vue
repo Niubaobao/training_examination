@@ -229,8 +229,6 @@ export default {
     goto(index) {
       this.showCardVisible = false;
       this.curIndex = index;
-      console.info(this.$route.query.id, "goto");
-      console.info(index, "index");
       this.gotoPageByIndex(index);
     },
     onRoute() {
@@ -256,13 +254,16 @@ export default {
       if (diff <= 0) {
         this.countDownText = "00:00:00";
       } else {
-        this.countDownText = `${parseInt(
-          diffDuration.asHours(),
-          10
-        )}:${parseInt(diffDuration.asMinutes()) % 60}:${parseInt(
+        this.countDownText = `${this.formatTime(
+          diffDuration.asHours()
+        )}:${this.formatTime(diffDuration.asMinutes()) % 60}:${this.formatTime(
           diffDuration.asSeconds()
         ) % 60}`;
       }
+    },
+    formatTime(time) {
+      const a = parseInt(time, 10);
+      return Number(a).length === 1 ? `0${a}` : a;
     },
     ...mapActions(["getDetail", "submitAnswer", "updateExamStatus"])
   }
