@@ -8,9 +8,9 @@
     <van-progress :percentage="percentage" :show-pivot="false" />
     <div class="exam-assessing-content">
       <div class="exam-assessing-title">
-        <van-tag style="margin-right: 10px" color="#f2826a" plain>
-          {{ title }}
-        </van-tag>
+        <van-tag style="margin-right: 10px" color="#f2826a" plain>{{
+          title
+        }}</van-tag>
         {{ subject.stmc }}（{{ subject.stfs }}分）
       </div>
       <div class="exam-assessing-input">
@@ -68,9 +68,9 @@
     <div class="exam-assessing-btns">
       <van-button :disabled="curIndex === 0" @click="last">上一题</van-button>
       <van-button @click="showCard">答题卡</van-button>
-      <van-button type="info" @click="next">
-        {{ curIndex === subjects.length - 1 ? "交卷" : "下一题" }}
-      </van-button>
+      <van-button type="info" @click="next">{{
+        curIndex === subjects.length - 1 ? "交卷" : "下一题"
+      }}</van-button>
     </div>
     <van-popup
       :style="{ height: '75%' }"
@@ -179,17 +179,14 @@ export default {
   },
   methods: {
     async next() {
+      await this.submitAnswerAction();
       if (this.curIndex === this.subjects.length - 1) {
         Dialog.confirm({
           title: "交卷提示",
           message: "试卷提交后不可更改，确认要提交吗？",
           beforeClose: async (action, done) => {
             if (action === "confirm") {
-              await this.updateExamStatus({
-                ksid: this.detail.ksid,
-                kszt: "03"
-              });
-              // 跳转
+              this.endExamAndToResult();
             } else {
               done();
             }
@@ -197,14 +194,6 @@ export default {
         });
       } else {
         // 填空题单独处理
-        const stda = this.ansers[this.curIndex];
-        if (stda) {
-          await this.submitAnswer({
-            ksid: this.detail.ksid,
-            stid: this.subject.stid,
-            stda: Array.isArray(stda) ? stda.join(";") : stda
-          });
-        }
         this.curIndex++;
         this.gotoPageByIndex(this.curIndex);
       }
@@ -220,11 +209,7 @@ export default {
       this.showCardVisible = false;
     },
     endExam() {
-      this.submitAnswer({
-        ksid: this.detail.ksid,
-        stid: this.subject.stid,
-        stda: "xxx"
-      });
+      this.submitAnswerAction();
     },
     goto(index) {
       this.showCardVisible = false;
@@ -264,6 +249,29 @@ export default {
     formatTime(time) {
       const a = parseInt(time, 10);
       return Number(a).length === 1 ? `0${a}` : a;
+    },
+    async submitAnswerAction() {
+      const stda = this.ansers[this.curIndex];
+      if (stda) {
+        await this.submitAnswer({
+          ksid: this.detail.ksid,
+          stid: this.subject.stid,
+          stda: Array.isArray(stda) ? stda.join(";") : stda
+        });
+      }
+    },
+    async endExamAndToResult() {
+      await this.updateExamStatus({
+        ksid: this.detail.ksid,
+        kszt: "03"
+      });
+      // 跳转
+      this.$router.push({
+        path: "/exam-assess-result",
+        query: {
+          id: this.detail.ksid
+        }
+      });
     },
     ...mapActions(["getDetail", "submitAnswer", "updateExamStatus"])
   }

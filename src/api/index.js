@@ -23,7 +23,7 @@ export const submitAnswer = params =>
   });
 export const updateExamStatus = params =>
   instance.post("electronictraining/Examination/UpdateExamination", {
-    params
+    ...params
   });
 //获取课程列表
 export const getCourses = params =>
