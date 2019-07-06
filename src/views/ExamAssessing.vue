@@ -89,10 +89,14 @@
         </div>
       </div>
       <div class="exam-assessing-question-card-result">
-        <div class="exam-assessing-question-card-item done">1</div>
-        <div class="exam-assessing-question-card-item done">2</div>
-        <div class="exam-assessing-question-card-item">3</div>
-        <div class="exam-assessing-question-card-item">4</div>
+        <div
+          v-for="(item, index) in ansers"
+          :key="index"
+          :class="{ 'exam-assessing-question-card-item': true, done: !!item }"
+          @click="goto(index)"
+        >
+          {{ index + 1 }}
+        </div>
       </div>
       <div class="exam-assessing-question-card-btns">
         <div class="border" @click="closeCard">继续答题</div>
@@ -207,7 +211,10 @@ export default {
         stda: "xxx"
       });
     },
-    onLoad() {},
+    goto(index) {
+      this.showCardVisible = false;
+      this.curIndex = index;
+    },
     ...mapActions(["getDetail", "submitAnswer", "updateExamStatus"])
   }
 };

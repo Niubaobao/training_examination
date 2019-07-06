@@ -24,7 +24,7 @@ const actions = {
     const ansers = [];
     questions.forEach(item => {
       if (item.stlx === "01" || item.stlx === "03") {
-        ansers.push("A");
+        ansers.push("");
       } else if (item.stlx === "02") {
         ansers.push(["A", "C"]);
       } else if (item.stlx === "04") {
