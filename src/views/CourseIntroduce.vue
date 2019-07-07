@@ -143,7 +143,6 @@ export default {
   },
   methods: {
     formatValue(item) {
-      console.log(parseInt((item.yxsc / item.xxsc) * 100));
       return parseInt((item.yxsc / item.xxsc) * 100);
     },
     initImage() {
@@ -212,20 +211,23 @@ export default {
       if (status !== 200) return;
       this.data = data.data;
       this.formatArr(data.data.kcnr);
-      // this.catalogue = data.data.kcnr;
       this.headerBg = data.data.kcfm;
       this.findCurrentTitle(data.data.kcnr);
       if (!this.currentTitle) {
         this.currentData = data.data.kcnr[0].zjnr[0];
       }
     },
-    formatArr(arr) {
-      for (let i = 0; i < arr.length; i++) {
-        for (let j = 0; j < arr[i].zjnr.length; j++) {
-          arr[i].zjnr[j].currentRate = 0;
+    formatArr(item) {
+      const arr = JSON.parse(JSON.stringify(item));
+      if (arr.length > 0) {
+        for (let i = 0; i < arr.length; i++) {
+          for (let j = 0; j < arr[i].zjnr.length; j++) {
+            arr[i].zjnr[j].currentRate =
+              parseInt(arr[i].zjnr[j].yxsc / arr[i].zjnr[j].xxsc) * 100;
+          }
         }
+        this.catalogue = arr;
       }
-      this.catalogue = arr;
     },
     findCurrentTitle(arr) {
       if (!arr.length) return;
