@@ -8,9 +8,9 @@
     <van-progress :percentage="percentage" :show-pivot="false" />
     <div class="exam-assessing-content">
       <div class="exam-assessing-title">
-        <van-tag style="margin-right: 10px" color="#f2826a" plain>{{
-          title
-        }}</van-tag>
+        <van-tag style="margin-right: 10px" color="#f2826a" plain>
+          {{ title }}
+        </van-tag>
         {{ subject.stmc }}（{{ subject.stfs }}分）
       </div>
       <div class="exam-assessing-input">
@@ -68,9 +68,9 @@
     <div class="exam-assessing-btns">
       <van-button :disabled="curIndex === 0" @click="last">上一题</van-button>
       <van-button @click="showCard">答题卡</van-button>
-      <van-button type="info" @click="next">{{
-        curIndex === subjects.length - 1 ? "交卷" : "下一题"
-      }}</van-button>
+      <van-button type="info" @click="next">
+        {{ curIndex === subjects.length - 1 ? "交卷" : "下一题" }}
+      </van-button>
     </div>
     <van-popup
       :style="{ height: '75%' }"
@@ -147,7 +147,8 @@ export default {
       ksid: this.$route.query.id
     });
     this.countDownTimer = setInterval(this.creatCountDown, 1000);
-    this.curIndex = +this.$route.query.index;
+    this.curIndex =
+      this.$route.query.index === undefined ? 0 : +this.$route.query.index;
   },
   destroyed() {
     clearInterval(this.countDownTimer);
