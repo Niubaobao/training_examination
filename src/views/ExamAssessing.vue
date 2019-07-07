@@ -3,20 +3,38 @@
     <div class="exam-assessing-line">
       <span>{{ curIndex + 1 }}</span>
       /{{ subjects.length }}
-      <div class="exam-assessing-line-time">{{ countDownText }}</div>
+      <div v-if="!isAnalysis" class="exam-assessing-line-time">
+        {{ countDownText }}
+      </div>
+      <div v-else class="exam-assessing-line-time">
+        <div
+          v-if="subject.stda === subject.zqda"
+          class="exam-assessing-line-time-item"
+        >
+          <van-icon
+            color="green"
+            name="passed"
+            style="margin-right: 5px"
+          />答对了
+        </div>
+        <div v-else class="exam-assessing-line-time-item">
+          <van-icon color="red" name="close" style="margin-right: 5px" />答错了
+        </div>
+      </div>
     </div>
     <van-progress :percentage="percentage" :show-pivot="false" />
     <div class="exam-assessing-content">
       <div class="exam-assessing-title">
-        <van-tag style="margin-right: 10px" color="#f2826a" plain>{{
-          title
-        }}</van-tag>
+        <van-tag style="margin-right: 10px" color="#f2826a" plain>
+          {{ title }}
+        </van-tag>
         {{ subject.stmc }}（{{ subject.stfs }}分）
       </div>
       <div class="exam-assessing-input">
         <van-radio-group
           v-if="subject.stlx === '01' || subject.stlx === '03'"
           v-model="ansers[curIndex]"
+          :disabled="isAnalysis"
         >
           <van-radio
             class="exam-assessing-input-radio"
@@ -43,6 +61,7 @@
             v-for="item in subject.questionOptions"
             :name="item.xxdm"
             :key="item.xxid"
+            :disabled="isAnalysis"
           >
             {{ item.xxms }}
             <div
@@ -57,20 +76,29 @@
         <div v-if="subject.stlx === '04'" class="exam-assessing-input-input">
           <div v-for="(item, i) in subject.questionOptions" :key="item.xxid">
             <div class="exam-assessing-input-input-title">{{ item.xxms }}</div>
-            <input v-model="ansers[curIndex][i]" />
+            <input :disabled="isAnalysis" v-model="ansers[curIndex][i]" />
           </div>
         </div>
         <div v-if="subject.stlx === '05'" class="exam-assessing-input-textarea">
-          <textarea cols="30" rows="10" v-model="ansers[curIndex]"></textarea>
+          <textarea
+            :disabled="isAnalysis"
+            cols="30"
+            rows="10"
+            v-model="ansers[curIndex]"
+          ></textarea>
         </div>
+      </div>
+      <div v-if="isAnalysis">
+        <h4>答案解析</h4>
+        <p style="color: #333">{{ subject.dajx }}</p>
       </div>
     </div>
     <div class="exam-assessing-btns">
       <van-button :disabled="curIndex === 0" @click="last">上一题</van-button>
       <van-button @click="showCard">答题卡</van-button>
-      <van-button type="info" @click="next">{{
-        curIndex === subjects.length - 1 ? "交卷" : "下一题"
-      }}</van-button>
+      <van-button type="info" @click="next">
+        {{ curIndex === subjects.length - 1 ? "交卷" : "下一题" }}
+      </van-button>
     </div>
     <van-popup
       :style="{ height: '75%' }"
@@ -118,7 +146,8 @@ import {
   Checkbox,
   Progress,
   Dialog,
-  Popup
+  Popup,
+  Icon
 } from "vant";
 
 const { mapActions, mapState } = createNamespacedHelpers("examAssessing");
@@ -129,7 +158,8 @@ export default {
     return {
       curIndex: 0,
       showCardVisible: false,
-      countDownText: ""
+      countDownText: "",
+      isAnalysis: false
     };
   },
   components: {
@@ -140,14 +170,17 @@ export default {
     "van-checkbox-group": CheckboxGroup,
     "van-checkbox": Checkbox,
     "van-progress": Progress,
-    "van-popup": Popup
+    "van-popup": Popup,
+    "van-icon": Icon
   },
   async created() {
+    const { id, index, is_analysis } = this.$route.query;
     await this.getDetail({
-      ksid: this.$route.query.id
+      ksid: id
     });
     this.countDownTimer = setInterval(this.creatCountDown, 1000);
-    this.curIndex = +this.$route.query.index;
+    this.curIndex = index === undefined ? 0 : +index;
+    this.isAnalysis = is_analysis === "1" ? true : false;
   },
   destroyed() {
     clearInterval(this.countDownTimer);
@@ -179,14 +212,25 @@ export default {
   },
   methods: {
     async next() {
-      await this.submitAnswerAction();
+      if (!this.isAnalysis) {
+        await this.submitAnswerAction();
+      }
       if (this.curIndex === this.subjects.length - 1) {
+        if (this.isAnalysis) {
+          return this.$router.push({
+            path: "/exam-assess-result",
+            query: {
+              id: this.detail.ksid
+            }
+          });
+        }
         Dialog.confirm({
           title: "交卷提示",
           message: "试卷提交后不可更改，确认要提交吗？",
           beforeClose: async (action, done) => {
             if (action === "confirm") {
-              this.endExamAndToResult();
+              await this.endExamAndToResult();
+              done();
             } else {
               done();
             }
@@ -226,7 +270,8 @@ export default {
         path: "/exam-assessing",
         query: {
           id: this.$route.query.id,
-          index
+          index,
+          is_analysis: this.$route.query.is_analysis
         }
       });
     },
@@ -296,6 +341,12 @@ export default {
   right: 15px;
   top: 15px;
   line-height: 1em;
+  display: flex;
+  align-items: center;
+}
+.exam-assessing-line-time-item {
+  display: flex;
+  align-items: center;
 }
 .exam-assessing-btns {
   position: fixed;
