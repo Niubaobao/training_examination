@@ -30,8 +30,20 @@
       <div class="exam-card-item">2</div>
     </div>
     <div class="btns">
-      <van-button class="left" size="large" type="info">查看结果</van-button>
-      <van-button class="right" size="large" plain hairline type="info"
+      <van-button
+        class="left"
+        size="large"
+        type="info"
+        @click="gotoSubjectAnalysis"
+        >查看结果</van-button
+      >
+      <van-button
+        class="right"
+        size="large"
+        plain
+        hairline
+        type="info"
+        @click="gotoExam"
         >再次考试</van-button
       >
     </div>
@@ -56,6 +68,25 @@ export default {
     ...mapState(["list", "loading", "finished"])
   },
   methods: {
+    gotoSubjectAnalysis() {
+      this.$router.push({
+        path: "/exam-assessing",
+        query: {
+          id: this.$route.query.id,
+          index: 0,
+          is_analysis: 1
+        }
+      });
+    },
+    gotoExam() {
+      this.$router.push({
+        path: "/exam-assessing",
+        query: {
+          id: this.$route.query.id,
+          index: 0
+        }
+      });
+    },
     onLoad() {},
     ...mapActions(["getList"])
   }
