@@ -4,20 +4,38 @@
       <van-list
         :value.sync="loading"
         :finished="finished"
+        @load="onLoad"
         finished-text="没有更多了"
       >
-        <div class="item" v-for="item in list" :key="item.id">
-          <div class="time">{{ item.time }}</div>
-          <div class="title">
-            <span class="tag">{{ item.tag }}</span>
-            <div>{{ item.title }}</div>
+        <div
+          class="item"
+          v-for="item in list"
+          :key="item.id"
+          @click="gotoExamDetail(item.ksid)"
+        >
+          <div class="time">
+            {{ formatTimeTitle(item.kssj) }} {{ getWeekByDate(item.kssj) }}
           </div>
-          <div class="end_time">截止时间：{{ item.end_time }}</div>
-          <div class="time_long">考试时间：{{ item.time_long }}</div>
-          <div class="desc">{{ item.desc }}</div>
+          <div class="title">
+            <span class="tag">{{ item.kszt }}</span>
+            <div>{{ item.ksmc }}</div>
+          </div>
+          <div class="end_time">
+            截止时间：
+            <img style="width: 18px" :src="clockImgUrl" />
+            {{ getEndTime(item.jzsj) }}
+          </div>
+          <div class="time_long">考试时长：{{ item.ksxs }}分钟</div>
+          <div class="desc">{{ item.kssm }}</div>
           <div class="btn-wrap">
-            <van-button class="btn" size="small" plain hairline type="danger"
-              >继续考试 29:30</van-button
+            <van-button
+              class="btn"
+              size="small"
+              plain
+              hairline
+              type="danger"
+              @click.stop="gotoContinueExam(item.ksid)"
+              >继续考试</van-button
             >
           </div>
         </div>
@@ -30,30 +48,63 @@
 import { createNamespacedHelpers } from "vuex";
 import PageWithTab from "@/components/PageWithTab.vue";
 import { List, Button } from "vant";
+import moment from "moment";
+import clockImgUrl from "../assets/images/clock.png";
 
 const { mapActions, mapState } = createNamespacedHelpers("examAssess");
 
 export default {
   name: "exam-assess",
+  data() {
+    return {
+      clockImgUrl,
+      pageIndex: 0
+    };
+  },
   components: {
     PageWithTab,
     "van-list": List,
     "van-button": Button
   },
-  created() {
-    this.getList();
-  },
   computed: {
     ...mapState(["list", "loading", "finished"])
   },
   methods: {
-    onLoad() {},
+    onLoad() {
+      this.getList({
+        pageIndex: ++this.pageIndex,
+        pageSize: 10
+      });
+    },
+    formatTimeTitle(date) {
+      return moment(date).format("MM月DD日");
+    },
+    getWeekByDate(date) {
+      const weeks = ["日", "一", "二", "三", "四", "五", "六"];
+      const index = new Date(date).getDay();
+      return `星期${weeks[index]}`;
+    },
+    getEndTime(date) {
+      return moment(date).format("hh:mm");
+    },
+    gotoExamDetail(id) {
+      this.$router.push({
+        path: "/exam-assess-detail",
+        query: { id }
+      });
+    },
+    gotoContinueExam(id) {
+      this.$router.push({
+        path: "/exam-assessing",
+        query: { id }
+      });
+    },
     ...mapActions(["getList"])
   }
 };
 </script>
 <style lang="less" scoped>
-.item {
+.exam-assess .item {
   display: flex;
   flex-direction: column;
   padding: 15px;
@@ -80,8 +131,11 @@ export default {
   }
   .end_time,
   .time_long {
-    font-size: 12px;
+    font-size: 14px;
     color: #777;
+    display: flex;
+    align-items: center;
+    padding: 2px 0;
   }
   .desc {
     margin-top: 7px;
@@ -95,7 +149,7 @@ export default {
   }
   .btn-wrap {
     text-align: right;
-    margin-top: 10px;
+    margin-top: 7px;
     .btn {
       width: 100px;
     }

@@ -9,7 +9,22 @@ instance.interceptors.response.use(
     console.info(err);
   }
 );
-export const getList = () => instance.get("list");
+export const getExamList = params =>
+  instance.get("electronictraining/Examination/GetExaminations", {
+    params
+  });
+export const getExamDetail = params =>
+  instance.get("electronictraining/Examination/GetExaminationInfo", {
+    params
+  });
+export const submitAnswer = params =>
+  instance.post("electronictraining/Examination/SubmitQuestionAnswer", {
+    ...params
+  });
+export const updateExamStatus = params =>
+  instance.post("electronictraining/Examination/UpdateExamination", {
+    ...params
+  });
 //获取课程列表
 export const getCourses = params =>
   instance.get("electronictraining/Course/GetCourses", { params });
