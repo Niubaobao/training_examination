@@ -17,6 +17,7 @@ const actions = {
     const { data = {} } =
       (await getExamList({
         userid: 110,
+        kszt: "01",
         ...params
       })) || {};
     const { PageIndex, Items, TotalPages } = data.data || {};
