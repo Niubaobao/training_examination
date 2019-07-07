@@ -10,10 +10,6 @@
     <!-- 图文课件02 -->
     <div v-if="params.kjlx == '02'" v-html="imgContent"></div>
     <!-- docx03 -->
-    <!-- <object width="800" height="600" border="0" v-if="params.kjlx == '03'">
-      <param name="src" :value="`http://dzjc.ruantechnology.com${pdfUrl}`">
-    </object>-->
-
     <div v-if="params.kjlx == '03'">
       <canvas
         v-for="page in pages"
@@ -21,8 +17,6 @@
         :key="page"
       ></canvas>
     </div>
-    <!-- <embed :src="`http://dzjc.ruantechnology.com${pdfUrl}`" width="800" height="600" ></embed> -->
-    <!-- <pdf src="./static/relativity.pdf"></pdf> -->
     <!-- 04课件链接 -->
     <iframe v-if="params.kjlx == '04'" :src="iframUrl" class="iframe"></iframe>
   </div>
@@ -30,6 +24,7 @@
 <script>
 import { GetCourseWareInfo, UpdateUserCourseware } from "@/api/index.js";
 import PDFJS from "pdfjs-dist";
+import { clearInterval } from "timers";
 export default {
   name: "learn_resources",
   data() {
@@ -42,37 +37,39 @@ export default {
       params: {},
       startTime: "",
       endTime: "",
-      pages: []
+      pages: [],
+      timer: null
     };
   },
-  // components: {
-  //   pdf
-  // },
   mounted() {
     this.startTime = new Date().getTime();
     this.id = this.$route.query.id;
-    console.log(this.id);
     this.getResource();
+    setTimeout(this.UpdateUserCourseware(), 1000 * 60);
   },
   // 实例销毁前
   beforeDestroy() {
-    this.UpdateUserCourseware();
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
   },
   methods: {
     //提交学习时间
-    async UpdateUserCourseware() {
-      this.endTime = new Date().getTime();
-      const time = Math.floor((this.endTime - this.startTime) / 1000 / 60);
-      if (time < 1) return;
-      const params = {
-        kcid: this.params.kcid,
-        kjid: this.params.kjid,
-        userid: "110",
-        yxsc: time,
-        zjxx: 1
-      };
-      const res = await UpdateUserCourseware(params);
-      console.log(res);
+    UpdateUserCourseware() {
+      // this.endTime = new Date().getTime();
+      // const time = Math.floor((this.endTime - this.startTime) / 1000 / 60);
+      // if (time < 1) return;
+      this.timer = setInterval(async () => {
+        const params = {
+          kcid: this.params.kcid,
+          kjid: this.params.kjid,
+          userid: "110",
+          yxsc: 1,
+          zjxx: 1
+        };
+        const res = await UpdateUserCourseware(params);
+        console.log(res);
+      }, 1000 * 60);
     },
     async getResource() {
       const params = {
@@ -92,11 +89,12 @@ export default {
       // 02图文课件
       if (data.data.kjlx == "02") {
         this.imgContent = data.data.kjnr;
+        console.log(this.imgContent, " this.imgContent");
       }
       // 03pdf
       if (data.data.kjlx == "03") {
         this.pdfUrl = data.data.kjnr;
-        this._loadFile(`http://dzjc.ruantechnology.com/${data.data.kjnr}`);
+        this._loadFile(`http://dzjc.ruantechnology.com${data.data.kjnr}`);
       }
     },
     _renderPage(num) {
@@ -143,7 +141,7 @@ export default {
   }
 };
 </script>
-<style lang="less" scoped>
+<style lang="less">
 img {
   width: 100%;
   height: auto;
