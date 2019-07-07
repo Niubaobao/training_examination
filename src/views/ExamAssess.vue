@@ -35,7 +35,7 @@
               hairline
               type="danger"
               @click.stop="gotoContinueExam(item.ksid)"
-              >继续考试</van-button
+              >考试</van-button
             >
           </div>
         </div>

@@ -147,7 +147,8 @@ export default {
       ksid: this.$route.query.id
     });
     this.countDownTimer = setInterval(this.creatCountDown, 1000);
-    this.curIndex = +this.$route.query.index;
+    this.curIndex =
+      this.$route.query.index === undefined ? 0 : +this.$route.query.index;
   },
   destroyed() {
     clearInterval(this.countDownTimer);
@@ -186,7 +187,8 @@ export default {
           message: "试卷提交后不可更改，确认要提交吗？",
           beforeClose: async (action, done) => {
             if (action === "confirm") {
-              this.endExamAndToResult();
+              await this.endExamAndToResult();
+              done();
             } else {
               done();
             }
