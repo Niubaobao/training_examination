@@ -143,6 +143,7 @@ export default {
   },
   methods: {
     formatValue(item) {
+      console.log(parseInt((item.yxsc / item.xxsc) * 100));
       return parseInt((item.yxsc / item.xxsc) * 100);
     },
     initImage() {

@@ -97,7 +97,7 @@ export default {
       // 03pdf
       if (data.data.kjlx == "03") {
         this.pdfUrl = data.data.kjnr;
-        this._loadFile(`http://dzjc.ruantechnology.com/${data.data.kjnr}`);
+        this._loadFile(`http://dzjc.ruantechnology.com${data.data.kjnr}`);
       }
     },
     _renderPage(num) {
