@@ -21,6 +21,11 @@
             <div>{{ item.ksmc }}</div>
           </div>
           <div class="end_time">
+            开始时间：
+            <img style="width: 18px" :src="clockImgUrl" />
+            {{ getEndTime(item.kssj) }}
+          </div>
+          <div class="end_time">
             截止时间：
             <img style="width: 18px" :src="clockImgUrl" />
             {{ getEndTime(item.jzsj) }}
@@ -85,7 +90,9 @@ export default {
       return `星期${weeks[index]}`;
     },
     getEndTime(date) {
-      return moment(date).format("hh:mm");
+      const d = new Date(date);
+      const zh = this.formatZhDate(d.getHours(), d.getMinutes());
+      return `${zh} ${d.getHours()}:${d.getMinutes()}`;
     },
     gotoExamDetail(id) {
       this.$router.push({
@@ -98,6 +105,19 @@ export default {
         path: "/exam-assessing",
         query: { id }
       });
+    },
+    formatZhDate(hour, minute) {
+      if (hour < 9) {
+        return "早上";
+      } else if (hour < 11 && minute < 30) {
+        return "上午";
+      } else if (hour < 13 && minute < 30) {
+        return "中午";
+      } else if (hour < 18) {
+        return "下午";
+      } else {
+        return "晚上";
+      }
     },
     ...mapActions(["getList"])
   }
