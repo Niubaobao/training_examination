@@ -3,28 +3,28 @@
     <h2>{{ detail.ksmc }}</h2>
     <van-row class="items">
       <van-col class="item" span="12">
-        <img class="item-icon" :src="totalScoreImgUrl" alt="" />
+        <img class="item-icon" :src="totalScoreImgUrl" alt />
         <div class="item-content">
           <span class="item-content-num">{{ detail.kszf }}</span>
           <span class="item-content-title">考试总分</span>
         </div>
       </van-col>
       <van-col class="item" span="12">
-        <img class="item-icon" :src="passLineImgUrl" alt="" />
+        <img class="item-icon" :src="passLineImgUrl" alt />
         <div class="item-content">
           <span class="item-content-num">{{ detail.tgfs }}</span>
           <span class="item-content-title">及格分</span>
         </div>
       </van-col>
       <van-col class="item" span="12">
-        <img class="item-icon" :src="examCountImgUrl" alt="" />
+        <img class="item-icon" :src="examCountImgUrl" alt />
         <div class="item-content">
           <span class="item-content-num">{{ detail.stsl }}</span>
           <span class="item-content-title">总题数</span>
         </div>
       </van-col>
       <van-col class="item" span="12">
-        <img class="item-icon" :src="examTimeLongImgUrl" alt="" />
+        <img class="item-icon" :src="examTimeLongImgUrl" alt />
         <div class="item-content">
           <span class="item-content-num">{{ detail.ksxs }}</span>
           <span class="item-content-title">考试时长</span>
@@ -43,10 +43,23 @@
     </div>
     <p class="desc">{{ detail.kssm }}</p>
     <div class="btns">
-      <van-button class="left" size="large" plain hairline type="info"
+      <van-button
+        v-if="detail.kszt !== '01'"
+        class="left"
+        size="large"
+        plain
+        hairline
+        type="info"
+        @click="gotoExamResult"
         >查看结果</van-button
       >
-      <van-button class="right" size="large" type="info">考试</van-button>
+      <van-button
+        class="right"
+        size="large"
+        type="info"
+        @click="gotoContinueExam"
+        >考试</van-button
+      >
     </div>
   </div>
 </template>
@@ -88,6 +101,20 @@ export default {
   methods: {
     formatDate(date) {
       return moment(date).format("MM-DD HH:mm");
+    },
+    gotoContinueExam() {
+      this.$router.push({
+        path: "/exam-assessing",
+        query: { id: this.$route.query.id }
+      });
+    },
+    gotoExamResult() {
+      this.$router.push({
+        path: "/exam-assess-result",
+        query: {
+          id: this.$route.query.id
+        }
+      });
     },
     ...mapActions(["getDetail"])
   }
