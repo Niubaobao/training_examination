@@ -1,29 +1,47 @@
 <template>
   <div class="wrap exam_record">
-    <div class="qwui-lean_exam exam_content">
-      <div class="data_bar">06月02日 星期日</div>
+    <div class="empty" v-show="listArr.length === 0">暂无考试记录</div>
+    <div
+      class="qwui-lean_exam exam_content"
+      v-for="item in listArr"
+      :key="item.sjid"
+    >
+      <div class="data_bar">
+        {{ formatTimeTitle(item.kssj) }} {{ getWeekByDate(item.kssj) }}
+      </div>
       <div>
         <div class="qwui-lean_examItem_record exam_item">
-          <div class="exam_name">test考试</div>
+          <div class="exam_name">{{ item.ksmc }}</div>
           <div class="qwui-flexbox">
             <div class="qwui-flexItem exam_info">
               <p class="exam_time">
-                <van-icon name="clock-o" /><span class="desc">未考</span>
+                <van-icon name="clock-o" /><span class="desc">
+                  {{ moment(item.jzsj).format("MM-DD HH:mm") }}</span
+                >
               </p>
-              <p class="exam_duration">考试时长：不限</p>
+              <p class="exam_duration">考试时长：{{ item.ksxs }}</p>
             </div>
             <div class="exam_pass_state exam_pass_big">
               <div class="exam_pass_container qwui-flexbox exam_pass_big">
-                <div class="exam_pass_desc">未考</div>
+                <div class="exam_pass_desc">
+                  {{ item.sftg === "01" ? "通过" : "未通过" }}
+                </div>
               </div>
             </div>
           </div>
           <div class="exam_explain">
-            企微考试测评应用提供完善的考试评测系统，支持自建题库、系统智能出卷、定向组织考试、题目乱序、外部考试、考试智能改卷，成绩精细统计等一系列特色功能。此考试为试用考试，自动改卷。
+            {{ item.kssm }}
           </div>
           <div class="clearfix">
-            <div class="exam_button">再次考试</div>
-            <div class="exam_button exam_button_answer">查看结果</div>
+            <div class="exam_button" @click="startExam(item.ksid)">
+              再次考试
+            </div>
+            <div
+              class="exam_button exam_button_answer"
+              @click="goResault(item.ksid)"
+            >
+              查看结果
+            </div>
           </div>
         </div>
       </div>
@@ -33,13 +51,55 @@
 
 <script>
 import { Icon } from "vant";
+import { getExamList } from "@/api/index.js";
+import moment from "moment";
 export default {
   name: "examination-history",
   data() {
-    return {};
+    return {
+      listArr: []
+    };
   },
   components: {
     "van-icon": Icon
+  },
+  mounted() {
+    this.getExamList();
+  },
+  methods: {
+    startExam(id) {
+      this.$router.push({
+        path: "/exam-assessing",
+        query: { id: id }
+      });
+    },
+    goResault(id) {
+      this.$router.push({
+        path: "/exam-assess-result",
+        query: {
+          id: id
+        }
+      });
+    },
+    formatTimeTitle(date) {
+      return moment(date).format("MM月DD日");
+    },
+    getWeekByDate(date) {
+      const weeks = ["日", "一", "二", "三", "四", "五", "六"];
+      const index = new Date(date).getDay();
+      return `星期${weeks[index]}`;
+    },
+    async getExamList() {
+      const params = {
+        userid: "110",
+        pageIndex: 1,
+        pageSize: 10,
+        kszt: "03"
+      };
+      const { status, data } = await getExamList(params);
+      if (status !== 200) return;
+      this.listArr = data.data.Items;
+    }
   }
 };
 </script>
@@ -49,6 +109,10 @@ export default {
   position: relative;
   overflow: hidden;
   min-width: 266px;
+  .empty {
+    text-align: center;
+    padding-top: 30%;
+  }
   p {
     margin: 0;
   }
