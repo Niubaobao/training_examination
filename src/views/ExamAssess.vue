@@ -17,7 +17,7 @@
             {{ formatTimeTitle(item.kssj) }} {{ getWeekByDate(item.kssj) }}
           </div>
           <div class="title">
-            <span class="tag">{{ item.kszt }}</span>
+            <span class="tag">{{ getTag(item.kszt) }}</span>
             <div>{{ item.ksmc }}</div>
           </div>
           <div class="end_time">
@@ -40,7 +40,7 @@
               hairline
               type="danger"
               @click.stop="gotoContinueExam(item.ksid)"
-              >考试</van-button
+              >{{ getBtnText(item.kszt) }}</van-button
             >
           </div>
         </div>
@@ -118,6 +118,22 @@ export default {
       } else {
         return "晚上";
       }
+    },
+    getTag(key) {
+      const tagMap = {
+        "01": "未开始",
+        "02": "考试中",
+        "03": "交卷（考试结束）"
+      };
+      return tagMap[key];
+    },
+    getBtnText(key) {
+      const tagMap = {
+        "01": "开始考试",
+        "02": "继续考试",
+        "03": "重新考试"
+      };
+      return tagMap[key];
     },
     ...mapActions(["getList"])
   }

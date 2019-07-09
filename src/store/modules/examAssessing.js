@@ -17,7 +17,8 @@ const actions = {
     commit("setLoading", true);
     const { data = {} } =
       (await getExamDetail({
-        ...params
+        ...params,
+        sfck: "01"
       })) || {};
     const detail = data.data || {};
     const questions = detail.questions || [];
