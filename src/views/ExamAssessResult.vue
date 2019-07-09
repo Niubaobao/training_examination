@@ -6,28 +6,34 @@
         src="https://img.52z.com/upload/news/image/20181108/20181108204521_83402.jpg"
         alt="头像"
       />
-      <span class="result">考试未通过</span>
+      <span class="result">考试{{ getResultText(detail.sftg) }}</span>
       <div class="name">洪金宝</div>
-      <div class="exam-type">试用</div>
+      <div class="exam-type">{{ detail.ksmc }}{{ detail.kslx }}</div>
       <div class="row">
         <div class="item">
-          <span class="item-result">1/5</span>
+          <span class="item-result">{{ detail.ddsl }}/{{ detail.stsl }}</span>
           <span class="item-title">答对</span>
         </div>
         <div class="item">
-          <span class="item-result">10</span>
+          <span class="item-result">{{ detail.ksdf }}</span>
           <span class="item-title">得分</span>
         </div>
         <div class="item">
-          <span class="item-result">10</span>
+          <span class="item-result">{{ detail.ksys }}</span>
           <span class="item-title">用时</span>
         </div>
       </div>
     </div>
     <div class="exam-card">
       <p>答题卡</p>
-      <div class="exam-card-item">1</div>
-      <div class="exam-card-item">2</div>
+      <div
+        v-for="(item, index) in detail.questions"
+        :key="item.stid"
+        class="exam-card-item"
+        @click="gotoSubjectAnalysis(index)"
+      >
+        {{ index + 1 }}
+      </div>
     </div>
     <div class="btns">
       <van-button
@@ -54,7 +60,7 @@
 import { createNamespacedHelpers } from "vuex";
 import { Button } from "vant";
 
-const { mapActions, mapState } = createNamespacedHelpers("examAssess");
+const { mapActions, mapState } = createNamespacedHelpers("examAssessResult");
 
 export default {
   name: "exam-assess-result",
@@ -62,18 +68,20 @@ export default {
     "van-button": Button
   },
   created() {
-    this.getList();
+    this.getDetail({
+      ksid: this.$route.query.id
+    });
   },
   computed: {
-    ...mapState(["list", "loading", "finished"])
+    ...mapState(["detail", "loading", "finished"])
   },
   methods: {
-    gotoSubjectAnalysis() {
+    gotoSubjectAnalysis(index) {
       this.$router.push({
         path: "/exam-assessing",
         query: {
           id: this.$route.query.id,
-          index: 0,
+          index: index || 0,
           is_analysis: 1
         }
       });
@@ -87,8 +95,15 @@ export default {
         }
       });
     },
+    getResultText(key) {
+      const resultMap = {
+        "01": "通过",
+        "02": "未通过"
+      };
+      return resultMap[key];
+    },
     onLoad() {},
-    ...mapActions(["getList"])
+    ...mapActions(["getDetail"])
   }
 };
 </script>
