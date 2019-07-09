@@ -18,6 +18,7 @@
           class="qwui-learn_list_item clearfix"
           v-for="item in dataArr"
           :key="item.kcid"
+          @click="goDetail(item.kcid)"
         >
           <div class="item_img_wrap">
             <img :src="`http://dzjc.ruantechnology.com/${item.kcfm}`" alt="" />
@@ -55,6 +56,7 @@
             class="qwui-learn_list_item clearfix"
             v-for="item in dataArr"
             :key="item.kcid"
+            @click="goDetail(item.kcid)"
           >
             <div class="item_img_wrap">
               <img
@@ -124,6 +126,14 @@ export default {
     "van-icon": Icon
   },
   methods: {
+    goDetail(id) {
+      this.$router.push({
+        path: "/course-introduce",
+        query: {
+          id: id
+        }
+      });
+    },
     formatDesc(item) {
       return `${parseInt(item.xxjd * 100)}%`;
     },

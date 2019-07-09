@@ -1,6 +1,5 @@
 <template>
   <div class="wrap exam_record">
-    <div class="empty" v-show="listArr.length === 0">暂无考试记录</div>
     <div
       class="qwui-lean_exam exam_content"
       v-for="item in listArr"
@@ -45,6 +44,9 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="empty" v-if="listArr.length === 0">
+      暂无考试记录
     </div>
   </div>
 </template>
@@ -97,6 +99,7 @@ export default {
         kszt: "03"
       };
       const { status, data } = await getExamList(params);
+      console.log(status, data.data.Items);
       if (status !== 200) return;
       this.listArr = data.data.Items;
     }
