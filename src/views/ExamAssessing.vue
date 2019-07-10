@@ -25,9 +25,9 @@
     <van-progress :percentage="percentage" :show-pivot="false" />
     <div class="exam-assessing-content">
       <div class="exam-assessing-title">
-        <van-tag style="margin-right: 10px" color="#f2826a" plain>{{
-          title
-        }}</van-tag>
+        <van-tag style="margin-right: 10px" color="#f2826a" plain>
+          {{ title }}
+        </van-tag>
         {{ subject.stmc }}（{{ subject.stfs }}分）
       </div>
       <div class="exam-assessing-input">
@@ -96,9 +96,9 @@
     <div class="exam-assessing-btns">
       <van-button :disabled="curIndex === 0" @click="last">上一题</van-button>
       <van-button @click="showCard">答题卡</van-button>
-      <van-button type="info" @click="next">{{
-        curIndex === subjects.length - 1 ? "交卷" : "下一题"
-      }}</van-button>
+      <van-button type="info" @click="next">
+        {{ curIndex === subjects.length - 1 ? "交卷" : "下一题" }}
+      </van-button>
     </div>
     <van-popup
       :style="{ height: '75%' }"
@@ -176,11 +176,11 @@ export default {
   async created() {
     console.info(12334, "created");
     const { id, index, is_analysis } = this.$route.query;
-    console.info(id, index, is_analysis, "id, index, is_analysis");
+    console.info(id, index, is_analysis == 1, "id, index, is_analysis");
     await this.getDetail({
       ksid: id
     });
-    if (is_analysis === 1) {
+    if (is_analysis == 1) {
       this.isAnalysis = true;
     } else {
       this.isAnalysis = false;

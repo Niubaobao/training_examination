@@ -18,7 +18,7 @@ const actions = {
     const { data = {} } =
       (await getExamDetail({
         ...params,
-        sfck: "01"
+        sfck: "02"
       })) || {};
     const detail = data.data || {};
     const questions = detail.questions || [];
