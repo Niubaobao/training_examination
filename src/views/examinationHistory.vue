@@ -15,7 +15,7 @@
             <div class="qwui-flexItem exam_info">
               <p class="exam_time">
                 <van-icon name="clock-o" /><span class="desc">
-                  {{ moment(item.jzsj).format("MM-DD HH:mm") }}</span
+                  {{ formatTime(item.jzsj) }}</span
                 >
               </p>
               <p class="exam_duration">考试时长：{{ item.ksxs }}</p>
@@ -69,6 +69,9 @@ export default {
     this.getExamList();
   },
   methods: {
+    formatTime(value) {
+      return moment(value).format("MM-DD HH:mm");
+    },
     startExam(id) {
       this.$router.push({
         path: "/exam-assessing",
