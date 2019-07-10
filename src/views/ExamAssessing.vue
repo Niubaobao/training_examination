@@ -25,9 +25,9 @@
     <van-progress :percentage="percentage" :show-pivot="false" />
     <div class="exam-assessing-content">
       <div class="exam-assessing-title">
-        <van-tag style="margin-right: 10px" color="#f2826a" plain>
-          {{ title }}
-        </van-tag>
+        <van-tag style="margin-right: 10px" color="#f2826a" plain>{{
+          title
+        }}</van-tag>
         {{ subject.stmc }}（{{ subject.stfs }}分）
       </div>
       <div class="exam-assessing-input">
@@ -96,9 +96,13 @@
     <div class="exam-assessing-btns">
       <van-button :disabled="curIndex === 0" @click="last">上一题</van-button>
       <van-button @click="showCard">答题卡</van-button>
-      <van-button type="info" @click="next">
-        {{ curIndex === subjects.length - 1 ? "交卷" : "下一题" }}
-      </van-button>
+      <van-button type="info" @click="next">{{
+        curIndex === subjects.length - 1
+          ? this.isAnalysis
+            ? "关闭"
+            : "交卷"
+          : "下一题"
+      }}</van-button>
     </div>
     <van-popup
       :style="{ height: '75%' }"
@@ -130,8 +134,10 @@
         </div>
       </div>
       <div class="exam-assessing-question-card-btns">
-        <div class="border" @click="closeCard">继续答题</div>
-        <div @click="endExam">交卷</div>
+        <div class="border" @click="closeCard">
+          继续{{ this.isAnalysis ? "查看" : "答题" }}
+        </div>
+        <div @click="endExam">{{ this.isAnalysis ? "关闭" : "交卷" }}</div>
       </div>
     </van-popup>
   </div>
@@ -264,7 +270,9 @@ export default {
       this.showCardVisible = false;
     },
     async endExam() {
-      await this.submitAnswerAction();
+      if (!this.isAnalysis) {
+        await this.submitAnswerAction();
+      }
       this.$router.push({
         path: "/exam-assess-result",
         query: {
@@ -313,13 +321,11 @@ export default {
     },
     async submitAnswerAction() {
       const stda = this.ansers[this.curIndex];
-      if (stda) {
-        await this.submitAnswer({
-          ksid: this.detail.ksid,
-          stid: this.subject.stid,
-          stda: Array.isArray(stda) ? stda.join(";") : stda
-        });
-      }
+      await this.submitAnswer({
+        ksid: this.detail.ksid,
+        stid: this.subject.stid,
+        stda: Array.isArray(stda) ? stda.join(";") : stda
+      });
     },
     async endExamAndToResult() {
       await this.updateExamStatus({
