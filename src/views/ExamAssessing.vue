@@ -120,7 +120,10 @@
         <div
           v-for="(item, index) in ansers"
           :key="index"
-          :class="{ 'exam-assessing-question-card-item': true, done: !!item }"
+          :class="{
+            'exam-assessing-question-card-item': true,
+            done: Array.isArray(item) ? item.length : !!item
+          }"
           @click="goto(index)"
         >
           {{ index + 1 }}
@@ -187,6 +190,7 @@ export default {
       this.countDownTimer = setInterval(this.creatCountDown, 1000);
     }
     this.curIndex = index === undefined ? 0 : +index;
+    console.info(this.ansers, "ansers");
   },
   destroyed() {
     clearInterval(this.countDownTimer);
@@ -259,8 +263,14 @@ export default {
     closeCard() {
       this.showCardVisible = false;
     },
-    endExam() {
-      this.submitAnswerAction();
+    async endExam() {
+      await this.submitAnswerAction();
+      this.$router.push({
+        path: "/exam-assess-result",
+        query: {
+          id: this.detail.ksid
+        }
+      });
     },
     goto(index) {
       this.showCardVisible = false;

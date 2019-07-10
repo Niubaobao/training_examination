@@ -29,7 +29,7 @@
       <div
         v-for="(item, index) in detail.questions"
         :key="item.stid"
-        class="exam-card-item"
+        :class="{ 'exam-card-item': true, active: !!item.stda }"
         @click="gotoSubjectAnalysis(index)"
       >
         {{ index + 1 }}
@@ -154,13 +154,17 @@ export default {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: blue;
-  color: #fff;
   text-align: center;
   line-height: 40px;
   float: left;
   margin-right: 10px;
   margin-bottom: 10px;
+  background-color: #999;
+  color: #fff;
+}
+
+.exam-card-item.active {
+  background-color: #1989fa;
 }
 
 .btns {
