@@ -92,7 +92,8 @@ export default {
   },
   created() {
     this.getDetail({
-      ksid: this.$route.query.id
+      ksid: this.$route.query.id,
+      sfck: "02"
     });
   },
   computed: {

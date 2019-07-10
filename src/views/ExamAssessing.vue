@@ -200,6 +200,7 @@ export default {
       return subjectTypeMap[this.subject.stlx];
     },
     percentage() {
+      console.log(this.curIndex, this.subjects.length);
       return ((this.curIndex + 1) / (this.subjects.length || 1)) * 100;
     },
     subjects() {

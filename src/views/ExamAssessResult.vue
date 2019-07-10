@@ -41,7 +41,7 @@
         size="large"
         type="info"
         @click="gotoSubjectAnalysis"
-        >查看结果</van-button
+        >查看解析</van-button
       >
       <van-button
         class="right"
@@ -77,6 +77,7 @@ export default {
   },
   methods: {
     gotoSubjectAnalysis(index) {
+      console.log(index, "index");
       this.$router.push({
         path: "/exam-assessing",
         query: {

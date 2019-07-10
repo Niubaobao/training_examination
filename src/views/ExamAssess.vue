@@ -90,9 +90,10 @@ export default {
       return `星期${weeks[index]}`;
     },
     getEndTime(date) {
-      const d = new Date(date);
-      const zh = this.formatZhDate(d.getHours(), d.getMinutes());
-      return `${zh} ${d.getHours()}:${d.getMinutes()}`;
+      return moment(date).format("HH:mm");
+      // const d = new Date(date);
+      // const zh = this.formatZhDate(d.getHours(), d.getMinutes());
+      // return `${zh} ${d.getHours()}:${d.getMinutes()}`;
     },
     gotoExamDetail(id) {
       this.$router.push({
