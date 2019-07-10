@@ -40,7 +40,7 @@
         class="left"
         size="large"
         type="info"
-        @click="gotoSubjectAnalysis"
+        @click="gotoSubjectAnalysis(null)"
         >查看解析</van-button
       >
       <van-button
