@@ -174,13 +174,19 @@ export default {
     "van-icon": Icon
   },
   async created() {
+    console.info(12334, "created");
     const { id, index, is_analysis } = this.$route.query;
+    console.info(id, index, is_analysis == 1, "id, index, is_analysis");
     await this.getDetail({
       ksid: id
     });
-    this.countDownTimer = setInterval(this.creatCountDown, 1000);
+    if (is_analysis == 1) {
+      this.isAnalysis = true;
+    } else {
+      this.isAnalysis = false;
+      this.countDownTimer = setInterval(this.creatCountDown, 1000);
+    }
     this.curIndex = index === undefined ? 0 : +index;
-    this.isAnalysis = is_analysis === "1" ? true : false;
   },
   destroyed() {
     clearInterval(this.countDownTimer);
