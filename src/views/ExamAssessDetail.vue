@@ -44,7 +44,7 @@
     <p class="desc">{{ detail.kssm }}</p>
     <div class="btns">
       <van-button
-        v-if="detail.kszt !== '01'"
+        v-if="detail.kszt === '03'"
         class="left"
         size="large"
         plain
