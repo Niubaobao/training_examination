@@ -25,6 +25,10 @@ export const updateExamStatus = params =>
   instance.post("electronictraining/Examination/UpdateExamination", {
     ...params
   });
+export const resetExam = params =>
+  instance.get("electronictraining/Examination/ResetExamination", {
+    params
+  });
 //获取课程列表
 export const getCourses = params =>
   instance.get("electronictraining/Course/GetCourses", { params });
