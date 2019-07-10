@@ -1,4 +1,4 @@
-import { getExamList } from "../../api";
+import { getExamList, resetExam } from "../../api";
 
 // initial state
 const state = {
@@ -24,6 +24,15 @@ const actions = {
     console.info(Items, "list");
     commit("setFinished", PageIndex >= TotalPages);
     commit("setList", Items);
+    commit("setLoading", false);
+  },
+
+  async resetExam({ commit }, params) {
+    commit("setLoading", true);
+    await resetExam({
+      userid: 110,
+      ...params
+    });
     commit("setLoading", false);
   }
 };

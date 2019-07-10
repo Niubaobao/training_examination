@@ -14,9 +14,8 @@
           <div class="qwui-flexbox">
             <div class="qwui-flexItem exam_info">
               <p class="exam_time">
-                <van-icon name="clock-o" /><span class="desc">
-                  {{ formatTime(item.jzsj) }}</span
-                >
+                <van-icon name="clock-o" />
+                <span class="desc">{{ formatTime(item.jzsj) }}</span>
               </p>
               <p class="exam_duration">考试时长：{{ item.ksxs }}</p>
             </div>
@@ -28,9 +27,7 @@
               </div>
             </div>
           </div>
-          <div class="exam_explain">
-            {{ item.kssm }}
-          </div>
+          <div class="exam_explain">{{ item.kssm }}</div>
           <div class="clearfix">
             <div class="exam_button" @click="startExam(item.ksid)">
               再次考试
@@ -45,15 +42,13 @@
         </div>
       </div>
     </div>
-    <div class="empty" v-if="listArr.length === 0">
-      暂无考试记录
-    </div>
+    <div class="empty" v-if="listArr.length === 0">暂无考试记录</div>
   </div>
 </template>
 
 <script>
 import { Icon } from "vant";
-import { getExamList } from "@/api/index.js";
+import { getExamList, resetExam } from "@/api/index.js";
 import moment from "moment";
 export default {
   name: "examination-history",
@@ -72,7 +67,10 @@ export default {
     formatTime(value) {
       return moment(value).format("MM-DD HH:mm");
     },
-    startExam(id) {
+    async startExam(id) {
+      await resetExam({
+        ksid: id
+      });
       this.$router.push({
         path: "/exam-assessing",
         query: { id: id }

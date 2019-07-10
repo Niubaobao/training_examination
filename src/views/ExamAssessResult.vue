@@ -87,7 +87,10 @@ export default {
         }
       });
     },
-    gotoExam() {
+    async gotoExam() {
+      await this.resetExam({
+        ksid: this.$route.query.id
+      });
       this.$router.push({
         path: "/exam-assessing",
         query: {
@@ -104,7 +107,7 @@ export default {
       return resultMap[key];
     },
     onLoad() {},
-    ...mapActions(["getDetail"])
+    ...mapActions(["getDetail", "resetExam"])
   }
 };
 </script>
