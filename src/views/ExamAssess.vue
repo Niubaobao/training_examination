@@ -39,7 +39,7 @@
               plain
               hairline
               type="danger"
-              @click.stop="gotoContinueExam(item.ksid)"
+              @click.stop="gotoContinueExam(item.ksid, item.kszt)"
               >{{ getBtnText(item.kszt) }}</van-button
             >
           </div>
@@ -101,7 +101,12 @@ export default {
         query: { id }
       });
     },
-    gotoContinueExam(id) {
+    async gotoContinueExam(id, kszt) {
+      if (kszt === "03") {
+        await this.resetExam({
+          ksid: id
+        });
+      }
       this.$router.push({
         path: "/exam-assessing",
         query: { id }
@@ -136,7 +141,7 @@ export default {
       };
       return tagMap[key];
     },
-    ...mapActions(["getList"])
+    ...mapActions(["getList", "resetExam"])
   }
 };
 </script>
