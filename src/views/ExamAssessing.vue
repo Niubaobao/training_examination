@@ -25,9 +25,9 @@
     <van-progress :percentage="percentage" :show-pivot="false" />
     <div class="exam-assessing-content">
       <div class="exam-assessing-title">
-        <van-tag style="margin-right: 10px" color="#f2826a" plain>{{
-          title
-        }}</van-tag>
+        <van-tag style="margin-right: 10px" color="#f2826a" plain>
+          {{ title }}
+        </van-tag>
         {{ subject.stmc }}（{{ subject.stfs }}分）
       </div>
       <div class="exam-assessing-input">
@@ -96,13 +96,15 @@
     <div class="exam-assessing-btns">
       <van-button :disabled="curIndex === 0" @click="last">上一题</van-button>
       <van-button @click="showCard">答题卡</van-button>
-      <van-button type="info" @click="next">{{
-        curIndex === subjects.length - 1
-          ? this.isAnalysis
-            ? "关闭"
-            : "交卷"
-          : "下一题"
-      }}</van-button>
+      <van-button type="info" @click="next">
+        {{
+          curIndex === subjects.length - 1
+            ? this.isAnalysis
+              ? "关闭"
+              : "交卷"
+            : "下一题"
+        }}
+      </van-button>
     </div>
     <van-popup
       :style="{ height: '75%' }"
@@ -259,7 +261,10 @@ export default {
         this.gotoPageByIndex(this.curIndex);
       }
     },
-    last() {
+    async last() {
+      if (!this.isAnalysis) {
+        await this.submitAnswerAction();
+      }
       this.curIndex--;
       this.gotoPageByIndex(this.curIndex);
     },
@@ -280,7 +285,10 @@ export default {
         }
       });
     },
-    goto(index) {
+    async goto(index) {
+      if (!this.isAnalysis) {
+        await this.submitAnswerAction();
+      }
       this.showCardVisible = false;
       this.curIndex = index;
       this.gotoPageByIndex(index);
@@ -444,7 +452,6 @@ export default {
   width: 17px;
   height: 17px;
   border-radius: 50%;
-  margin-right: 5px;
   background: #999;
 }
 .exam-assessing-question-card-circle.active {
@@ -452,16 +459,21 @@ export default {
 }
 .exam-assessing-question-card-result {
   overflow: auto;
+  padding: 0 15px 40px 15px;
 }
 .exam-assessing-question-card-item {
   float: left;
-  width: 30px;
-  line-height: 30px;
-  height: 30px;
+  width: 40px;
+  line-height: 40px;
+  height: 40px;
   border-radius: 50%;
   background: #999;
   text-align: center;
-  margin-left: 20px;
+  margin-right: calc((100% - 15rem) / 5);
+  margin-bottom: calc((100% - 15rem) / 5);
+}
+.exam-assessing-question-card-item:nth-of-type(6n) {
+  margin-right: 0;
 }
 .exam-assessing-question-card-item.done {
   background: #1989fa;
@@ -472,6 +484,7 @@ export default {
   left: 0;
   right: 0;
   overflow: hidden;
+  background: #fff;
 }
 .exam-assessing-question-card-btns > div {
   width: 50%;
