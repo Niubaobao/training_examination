@@ -1,6 +1,11 @@
 <template>
   <div class="exam-assess-detail">
-    <h2>{{ detail.ksmc }}</h2>
+    <h2>
+      {{ detail.ksmc }}
+      <van-tag style="margin-right: 10px" color="#f2826a" plain>{{
+        detail.ksztms
+      }}</van-tag>
+    </h2>
     <van-row class="items">
       <van-col class="item" span="12">
         <img class="item-icon" :src="totalScoreImgUrl" alt />
@@ -66,7 +71,7 @@
 <script>
 // @ is an alias to /src
 import { createNamespacedHelpers } from "vuex";
-import { Row, Col, Button } from "vant";
+import { Row, Col, Button, Tag } from "vant";
 import moment from "moment";
 import totalScoreImgUrl from "../assets/images/exam-assess-detail-zongfenshu.png";
 import passLineImgUrl from "../assets/images/exam-assess-detail-jigexian.png";
@@ -88,7 +93,8 @@ export default {
   components: {
     "van-row": Row,
     "van-col": Col,
-    "van-button": Button
+    "van-button": Button,
+    "van-tag": Tag
   },
   created() {
     this.getDetail({

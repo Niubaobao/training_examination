@@ -149,6 +149,7 @@ export default {
 .exam-card {
   overflow: auto;
   padding: 0 15px;
+  margin-bottom: 100px;
 }
 .exam-card p {
   text-align: center;
@@ -160,10 +161,13 @@ export default {
   text-align: center;
   line-height: 40px;
   float: left;
-  margin-right: 10px;
-  margin-bottom: 10px;
+  margin-right: calc((100% - 15rem) / 5);
+  margin-bottom: calc((100% - 15rem) / 5);
   background-color: #999;
   color: #fff;
+}
+.exam-card-item:nth-of-type(6n) {
+  margin-right: 0;
 }
 
 .exam-card-item.active {
@@ -177,7 +181,8 @@ export default {
   border-top: 1px solid #ddd;
   left: 0;
   right: 0;
-  bottom: 10px;
+  bottom: 0;
+  background: #fff;
 }
 .btns .left {
   margin-right: 5px;
