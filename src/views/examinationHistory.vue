@@ -15,7 +15,7 @@
             <div class="qwui-flexItem exam_info">
               <p class="exam_time">
                 <van-icon name="clock-o" />
-                <span class="desc">{{ formatTime(item.jzsj) }}</span>
+                <span class="desc">交卷{{ formatTime(item.gxsj) }}</span>
               </p>
               <p class="exam_duration">考试时长：{{ item.ksxs }}</p>
             </div>
