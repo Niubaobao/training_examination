@@ -69,7 +69,8 @@ export default {
     },
     async startExam(id) {
       await resetExam({
-        ksid: id
+        ksid: id,
+        userid: "110"
       });
       this.$router.push({
         path: "/exam-assessing",

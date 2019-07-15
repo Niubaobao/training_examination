@@ -4,7 +4,10 @@ import router from "./router";
 import store from "./store";
 import Video from "video.js";
 import "video.js/dist/video-js.css";
+import VConsole from "vconsole";
 Vue.prototype.$video = Video;
+
+new VConsole();
 
 Vue.config.productionTip = false;
 
