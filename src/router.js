@@ -17,48 +17,72 @@ const router = new Router({
       // 学习任务
       path: "/learning-tasks",
       name: "learning-tasks",
+      meta: {
+        title: "学习任务"
+      },
       component: () => import("./views/LearningTasks.vue")
     },
     {
       // 考试测评
       path: "/exam-assess",
       name: "exam-assess",
+      meta: {
+        title: "考试评测"
+      },
       component: () => import("./views/ExamAssess.vue")
     },
     {
       // 考试测评-详情
       path: "/exam-assess-detail",
       name: "exam-assess-detail",
+      meta: {
+        title: "考试详情"
+      },
       component: () => import("./views/ExamAssessDetail.vue")
     },
     {
       // 考试测评-结果
       path: "/exam-assess-result",
       name: "exam-assess-result",
+      meta: {
+        title: "考试结果"
+      },
       component: () => import("./views/ExamAssessResult.vue")
     },
     {
       // 考试测评-进行中
       path: "/exam-assessing",
       name: "exam-assessing",
+      meta: {
+        title: "考试中"
+      },
       component: () => import("./views/ExamAssessing.vue")
     },
     {
       // 个人中心
       path: "/personal-center",
       name: "personal-center",
+      meta: {
+        title: "个人中心"
+      },
       component: () => import("./views/PersonalCenter.vue")
     },
     {
       // 最近学习
       path: "/learn-history",
       name: "learn——history",
+      meta: {
+        title: "学习记录"
+      },
       component: () => import("./views/LearnHistory.vue")
     },
     {
       // 考试记录
       path: "/examination-history",
       name: "examination-history",
+      meta: {
+        title: "考试记录"
+      },
       component: () => import("./views/examinationHistory.vue")
     },
     {
@@ -71,12 +95,18 @@ const router = new Router({
       // 课程介绍
       path: "/course-introduce",
       name: "course-introduce",
+      meta: {
+        title: "课程详情"
+      },
       component: () => import("./views/CourseIntroduce.vue")
     },
     {
       // 学习资源
       path: "/learn-resources",
       name: "learn-resources",
+      meta: {
+        title: "学习资源"
+      },
       component: () => import("./views/learnResources.vue")
     },
     {
@@ -88,6 +118,12 @@ const router = new Router({
       }
     }
   ]
+});
+router.beforeEach(async (to, from, next) => {
+  if (to.meta.title) {
+    document.title = to.meta.title;
+  }
+  next();
 });
 // router.beforeEach(async (to, from, next) => {
 //   const KEY = "training_examination_user";

@@ -25,9 +25,9 @@
     <van-progress :percentage="percentage" :show-pivot="false" />
     <div class="exam-assessing-content">
       <div class="exam-assessing-title">
-        <van-tag style="margin-right: 10px" color="#f2826a" plain>
-          {{ title }}
-        </van-tag>
+        <van-tag style="margin-right: 10px" color="#f2826a" plain>{{
+          title
+        }}</van-tag>
         {{ subject.stmc }}（{{ subject.stfs }}分）
       </div>
       <div class="exam-assessing-input">
@@ -193,6 +193,7 @@ export default {
     });
     if (is_analysis == 1) {
       this.isAnalysis = true;
+      document.title = "试题解析";
     } else {
       this.isAnalysis = false;
       this.countDownTimer = setInterval(this.creatCountDown, 1000);

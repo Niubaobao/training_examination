@@ -90,7 +90,7 @@ export default {
       return `星期${weeks[index]}`;
     },
     getEndTime(date) {
-      return moment(date).format("HH:mm");
+      return moment(date).format("YYYY/MM/DD HH:mm");
       // const d = new Date(date);
       // const zh = this.formatZhDate(d.getHours(), d.getMinutes());
       // return `${zh} ${d.getHours()}:${d.getMinutes()}`;
