@@ -1,26 +1,24 @@
 <template>
   <div class="exam-assess-result">
     <div class="wrap">
-      <img
-        class="avatar"
-        src="https://img.52z.com/upload/news/image/20181108/20181108204521_83402.jpg"
-        alt="头像"
-      />
+      <img class="avatar" src="../../src/assets/images/avator.png" alt="头像" />
       <span class="result">考试{{ getResultText(detail.sftg) }}</span>
       <div class="name">洪金宝</div>
       <div class="exam-type">{{ detail.ksmc }}{{ detail.kslx }}</div>
       <div class="row">
         <div class="item">
-          <span class="item-result">{{ detail.ddsl }}/{{ detail.stsl }}</span>
+          <span class="item-result"
+            >{{ detail.ddsl || 0 }}/{{ detail.stsl || 0 }}</span
+          >
           <span class="item-title">答对</span>
         </div>
         <div class="item">
-          <span class="item-result">{{ detail.ksdf }}</span>
+          <span class="item-result">{{ detail.ksdf || 0 }}</span>
           <span class="item-title">得分</span>
         </div>
         <div class="item">
-          <span class="item-result">{{ detail.ksys }}</span>
-          <span class="item-title">用时</span>
+          <span class="item-result">{{ detail.ksys || 0 }}</span>
+          <span class="item-title">用时(分钟)</span>
         </div>
       </div>
     </div>
@@ -116,7 +114,9 @@ export default {
   position: relative;
 }
 .wrap {
-  background-color: #07c160;
+  // background-color: #07c160;
+  background: url("../assets/images/bg.png") no-repeat;
+  background-size: cover;
   display: flex;
   flex-direction: column;
   align-items: center;

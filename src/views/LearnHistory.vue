@@ -119,6 +119,7 @@ export default {
     }
   },
   mounted() {
+    console.log(localStorage.getItem("training_examination_user"), "userinfo");
     this.GetUserRecentCourses(0);
   },
   components: {
