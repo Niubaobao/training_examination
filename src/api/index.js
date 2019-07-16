@@ -37,7 +37,7 @@ export const getCourseInfo = params =>
   instance.get("electronictraining/Course/GetCourseInfo", { params });
 //用户登录
 export const userLogin = params =>
-  instance.get("electronicpolice/User/Login", { params });
+  instance.get("electronictraining/UserInfo/Login", { params });
 //获取用户信息
 export const getUserInfo = params =>
   instance.get("electronicpolice/User/GetUserInfo", { params });

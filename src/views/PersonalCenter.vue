@@ -5,10 +5,7 @@
         <!-- 个人信息 -->
         <div class="person_info">
           <div class="lean_user_portrait">
-            <img
-              src="http://yy2.tv.cmvideo.cn:8088/migutv/res/2018/04/12/507JOLBV8RPC.jpg"
-              alt=""
-            />
+            <img src="../../src/assets/images/avator.png" alt="" />
           </div>
           <p class="lean_user_name">{{ userInfo.xm }}</p>
           <div class="lean_user_info qwui-flexbox">
@@ -69,6 +66,7 @@ export default {
     "van-cell": Cell
   },
   mounted() {
+    console.log(localStorage.getItem("training_examination_user"));
     this.getUserInfo();
   },
   methods: {
