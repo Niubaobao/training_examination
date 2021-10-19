@@ -1,5 +1,8 @@
 <template>
   <div class="learning-tasks">
+    <a href="tel:400-608-2005"
+      >heltel:400-608-2005tel:400-608-2005tel:400-608-2005tel:400-608-2005tel:400-608-2005looo</a
+    >
     <PageWithTab>
       <div class="content-wapper">
         <van-search
@@ -114,83 +117,96 @@
 </template>
 <script>
 // @ is an alias to /src
-import PageWithTab from "@/components/PageWithTab.vue";
-import { Search, Icon, Circle } from "vant";
-import { getCourses } from "@/api/index.js";
+import PageWithTab from '@/components/PageWithTab.vue'
+import { Search, Icon, Circle } from 'vant'
+import { getCourses, testProxy } from '@/api/index.js'
 
 export default {
-  name: "learning-tasks",
+  name: 'learning-tasks',
   components: {
     PageWithTab,
-    "van-search": Search,
-    "van-icon": Icon,
-    "van-circle": Circle
+    'van-search': Search,
+    'van-icon': Icon,
+    'van-circle': Circle,
   },
   data() {
     return {
       optionalArr: [], //选修课
       mandatoryArr: [], //必休课
-      activeNames: ["1"],
+      activeNames: ['1'],
       currentRate: 0,
       currentRate1: 0,
       PageSize: 10,
       currentIndex: 1,
-      keyword: ""
-    };
+      keyword: '',
+    }
   },
   mounted() {
-    this.getList();
+    console.log('?????')
+    this.testDemo()
+    this.getList()
   },
   methods: {
     formatPrec(item) {
-      return `${parseInt(item.xxjd * 100)}%`;
+      return `${parseInt(item.xxjd * 100)}%`
     },
     //课程详情
     goDetailPage(id) {
       this.$router.push({
-        path: "/course-introduce",
-        query: { id: id }
-      });
+        path: '/course-introduce',
+        query: { id: id },
+      })
+    },
+
+    async testDemo() {
+      console.log('hahahah')
+      const params = {
+        // link: 'https://www.baidu.com/',
+        username: 'admin',
+        password: '123456',
+      }
+      const res = await testProxy(params)
+      console.log(res)
     },
     async getList() {
       const params = {
         userid: 110,
         keyword: this.keyword,
-        kklx: "",
+        kklx: '',
         pageIndex: this.currentIndex,
-        pageSize: this.PageSize
-      };
-      const { status, data } = await getCourses(params);
-      if (status !== 200) return;
-      this.formatArray(data.data.Items);
+        pageSize: this.PageSize,
+      }
+      const { status, data } = await getCourses(params)
+      if (status !== 200) return
+      this.formatArray(data.data.Items)
     },
     //初始化数据
     formatArray(items) {
       if (items.length > 0) {
-        const optionalArr = [];
-        const mandatoryArr = [];
+        const optionalArr = []
+        const mandatoryArr = []
         items.map(item => {
-          console.log(item);
-          const ite = Object.assign({}, item, { currentRate: 0 });
-          if (ite.kklx === "选修课") {
-            optionalArr.push(ite);
-          } else if (ite.kklx === "必修课") {
-            mandatoryArr.push(ite);
+          console.log(item)
+          const ite = Object.assign({}, item, { currentRate: 0 })
+          if (ite.kklx === '选修课') {
+            optionalArr.push(ite)
+          } else if (ite.kklx === '必修课') {
+            mandatoryArr.push(ite)
           }
-        });
-        this.optionalArr = optionalArr;
-        this.mandatoryArr = mandatoryArr;
-        console.log(this.mandatoryArr, this.optionalArr);
+        })
+        this.optionalArr = optionalArr
+        this.mandatoryArr = mandatoryArr
+        console.log(this.mandatoryArr, this.optionalArr)
       }
     },
     goDetail(value) {
       this.$router.push({
-        path: "/compulsory-course",
-        query: { type: value }
-      });
-    }
-  }
-};
+        path: '/compulsory-course',
+        query: { type: value },
+      })
+    },
+  },
+}
 </script>
 <style lang="less" scoped>
 .content {
